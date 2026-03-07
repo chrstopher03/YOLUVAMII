@@ -1,10 +1,11 @@
 {
-"name": "YOLUVAMI Sistema Pro",
+"name": "YOLUVAMI",
 "short_name": "YOLUVAMI",
 "start_url": "index.html",
 "display": "standalone",
-"background_color": "#ffffff",
+"background_color": "#f5f6fa",
 "theme_color": "#1e3a8a",
+"orientation": "portrait",
 "icons": [
 {
 "src": "23.jpeg",

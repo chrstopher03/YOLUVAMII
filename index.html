@@ -393,9 +393,10 @@ line-height:1.5;
 <h2>YOLUVAMI</h2>
 <p>Somoto · Madriz · Nicaragua 🇳🇮</p>
 <p>Lubricantes · Grasas · Aceites</p>
-<button id="instalarBtn" style="display:none">📲 Instalar Aplicación</button>
 <button class="infoBtn" onclick="openInfo()">Ver Información</button>
-</div>
+<button id="installBtn" class="infoBtn" style="display:none;margin-top:8px;">
+📲 Instalar App
+</button></div>
 
 <div class="filtros">
 <select id="categoriaFiltro">
@@ -853,13 +854,37 @@ precioMin.addEventListener("input",mostrarProductos);
 precioMax.addEventListener("input",mostrarProductos);
 
 mostrarProductos();
+/* ===================== */
+/* INSTALAR APP (PWA) */
+/* ===================== */
 
-/* PWA INSTALAR APP */
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js")})}
-let deferredPrompt
-const btnInstalar=document.getElementById("instalarBtn")
-if(btnInstalar){btnInstalar.style.display="none";window.addEventListener("beforeinstallprompt",(e)=>{e.preventDefault();deferredPrompt=e;btnInstalar.style.display="block"});btnInstalar.addEventListener("click",async()=>{if(deferredPrompt){deferredPrompt.prompt();const resultado=await deferredPrompt.userChoice;if(resultado.outcome==="accepted") btnInstalar.style.display="none";deferredPrompt=null}})}
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
 
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "inline-block";
+});
+
+installBtn.addEventListener("click", async ()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+  }
+});
+
+/* ===================== */
+/* SERVICE WORKER */
+/* ===================== */
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+  .then(()=>console.log("Service Worker registrado"))
+  .catch(err=>console.log("Error SW:",err));
+}
 </script>
 
 </body>

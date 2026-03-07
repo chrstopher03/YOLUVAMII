@@ -1,16 +1,22 @@
-const CACHE_NAME="yoluvami-v1";
-const urlsToCache=["./","index.html","manifest.json"];
+const CACHE = "yoluvami-cache-v1";
 
-self.addEventListener("install",e=>{
-e.waitUntil(
-caches.open(CACHE_NAME)
-.then(cache=>cache.addAll(urlsToCache))
-);
+const archivos = [
+"/",
+"index.html",
+"manifest.json",
+"23.jpeg"
+];
+
+self.addEventListener("install", e=>{
+  e.waitUntil(
+    caches.open(CACHE)
+    .then(cache=>cache.addAll(archivos))
+  );
 });
 
-self.addEventListener("fetch",e=>{
-e.respondWith(
-caches.match(e.request)
-.then(response=>response||fetch(e.request))
-);
+self.addEventListener("fetch", e=>{
+  e.respondWith(
+    caches.match(e.request)
+    .then(res=> res || fetch(e.request))
+  );
 });
