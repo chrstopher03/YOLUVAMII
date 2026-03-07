@@ -274,7 +274,40 @@ width:100%;
 font-weight:600;
 cursor:pointer;
 }
+.installBtn{
+display:none;
+margin:15px auto;
+padding:12px 24px;
+background:#2563eb;
+color:white;
+border:2px solid #1e40af;
+border-radius:25px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 5px 12px rgba(0,0,0,0.25);
+transition:all .25s ease;
+}
 
+/* centrar el botón */
+.installBtn{
+display:none;
+margin-left:auto;
+margin-right:auto;
+display:block;
+}
+
+/* efecto al pasar el dedo o mouse */
+.installBtn:hover{
+background:#1e40af;
+transform:translateY(-2px);
+box-shadow:0 8px 16px rgba(0,0,0,0.3);
+}
+
+/* efecto al presionar */
+.installBtn:active{
+transform:scale(0.96);
+}
 /* INFO MODAL */
 .infoHeader{
 background:linear-gradient(180deg,#1e3a8a,#14285f);
@@ -394,8 +427,7 @@ line-height:1.5;
 <p>Somoto · Madriz · Nicaragua 🇳🇮</p>
 <p>Lubricantes · Grasas · Aceites</p>
 <button class="infoBtn" onclick="openInfo()">Ver Información</button>
-<button id="installBtn" class="infoBtn" style="display:none;margin-top:8px;">
-📲 Instalar App
+<button id="installBtn" class="installBtn">📲 Instalar App</button>📲 Instalar App
 </button></div>
 
 <div class="filtros">
