@@ -894,31 +894,42 @@ mostrarProductos();/* ===================== */
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt", (e)=>{
+/* detectar si ya está instalada */
+function isAppInstalled(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+/* si ya está instalada ocultar botón */
+if(isAppInstalled()){
+  installBtn.style.display = "none";
+}
+
+/* mostrar botón solo si se puede instalar */
+window.addEventListener("beforeinstallprompt",(e)=>{
+  if(isAppInstalled()) return;
+
   e.preventDefault();
   deferredPrompt = e;
 
-  /* mostrar botón */
   installBtn.style.display = "block";
 });
 
+/* botón instalar */
 installBtn.addEventListener("click", async ()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
+  if(!deferredPrompt) return;
 
-    const choice = await deferredPrompt.userChoice;
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
 
-    if(choice.outcome === "accepted"){
-      installBtn.style.display = "none";
-    }
-
-    deferredPrompt = null;
+  if(choice.outcome === "accepted"){
+    installBtn.style.display = "none";
   }
+
+  deferredPrompt = null;
 });
 
-/* cuando la app ya se instaló */
+/* cuando se instala */
 window.addEventListener("appinstalled", ()=>{
-  console.log("App instalada");
   installBtn.style.display = "none";
 });
 
