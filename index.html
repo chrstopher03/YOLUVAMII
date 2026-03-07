@@ -430,7 +430,12 @@ line-height:1.5;
 <p>Lubricantes · Grasas · Aceites</p>
 <button class="infoBtn" onclick="openInfo()">Ver Información</button>
 <button id="installBtn" class="installBtn">📲 Instalar App</button></div>
-
+<div id="updateBox" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e40af;color:white;padding:12px 20px;border-radius:20px;box-shadow:0 6px 15px rgba(0,0,0,0.3);font-size:14px;">
+Nueva actualización disponible
+<button onclick="updateApp()" style="margin-left:10px;background:white;color:#1e40af;border:none;padding:6px 10px;border-radius:10px;cursor:pointer;">
+Actualizar
+</button>
+</div>
 <div class="filtros">
 <select id="categoriaFiltro">
 <option value="todos">Todas</option>
@@ -941,6 +946,40 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js")
   .then(()=>console.log("Service Worker registrado"))
   .catch(err=>console.log("Error SW:",err));
+}
+let newWorker;
+
+if("serviceWorker" in navigator){
+
+navigator.serviceWorker.register("sw.js").then(reg=>{
+
+  if(reg.waiting){
+    showUpdate();
+  }
+
+  reg.addEventListener("updatefound",()=>{
+    newWorker = reg.installing;
+
+    newWorker.addEventListener("statechange",()=>{
+      if(newWorker.state === "installed" && navigator.serviceWorker.controller){
+        showUpdate();
+      }
+    });
+  });
+
+});
+
+}
+
+function showUpdate(){
+  document.getElementById("updateBox").style.display = "block";
+}
+
+function updateApp(){
+  if(newWorker){
+    newWorker.postMessage({action:"skipWaiting"});
+  }
+  window.location.reload();
 }
 </script>
 
