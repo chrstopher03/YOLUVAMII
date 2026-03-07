@@ -414,6 +414,16 @@ line-height:1.5;
     max-width:700px;
   }
 }
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translate(-50%,40px);
+}
+to{
+opacity:1;
+transform:translate(-50%,0);
+}
+}
 </style>
 </head>
 
@@ -507,7 +517,22 @@ Productos confiables y de alta calidad.
   </div>
 </div>
 
-
+<div id="updateToast" style="
+display:none;
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#111827;
+color:white;
+padding:12px 18px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.4);
+font-size:14px;
+z-index:9999;
+animation:slideUp .4s ease;">
+🚀 Actualización instalada
+</div>
 
 <!-- MODAL TIKTOK -->
 <div class="modal" id="tiktokModal">
@@ -981,7 +1006,45 @@ function updateApp(){
   }
   window.location.reload();
 }
+if("serviceWorker" in navigator){
 
+navigator.serviceWorker.register("sw.js").then(reg=>{
+
+reg.addEventListener("updatefound",()=>{
+
+const newWorker = reg.installing;
+
+newWorker.addEventListener("statechange",()=>{
+
+if(newWorker.state === "installed" && navigator.serviceWorker.controller){
+
+showUpdateToast();
+
+setTimeout(()=>{
+location.reload();
+},2000);
+
+}
+
+});
+
+});
+
+});
+
+}
+
+function showUpdateToast(){
+
+const toast = document.getElementById("updateToast");
+
+toast.style.display = "block";
+
+setTimeout(()=>{
+toast.style.display = "none";
+},3000);
+
+}
 
 </script>
 
