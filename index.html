@@ -1132,38 +1132,29 @@ navigator.serviceWorker.register("sw.js")
 .catch(err=>console.log(err));
 }
 
+/* ========================= */
+/* SISTEMA DE NOTIFICACIONES */
+/* ========================= */
+
+/* Pedir permiso de notificaciones */
 async function activarNotificaciones(){
+  if(!("Notification" in window)) return;
 
-if(!("Notification" in window)) return;
-
-let permiso = await Notification.requestPermission();
-
-if(permiso === "granted"){
-
-new Notification("YOLUVAMI",{
-body:"Notificaciones activadas 🔔",
-icon:"23.jpeg"
-});
-
+  if(Notification.permission === "default"){
+    try{
+      await Notification.requestPermission();
+    }catch(e){
+      console.log("Permiso de notificaciones rechazado");
+    }
+  }
 }
 
-}
+/* ========================= */
+/* NOTIFICACIÓN TIPO TOAST WEB */
+/* ========================= */
 
-activarNotificaciones();
-window.addEventListener("load", ()=>{
+function mostrarNotificacion(texto, tiempo = 4000){
 
-setTimeout(()=>{
-const splash = document.getElementById("splash");
-splash.style.opacity="0";
-
-setTimeout(()=>{
-splash.style.display="none";
-},500);
-
-},1500);
-
-});// Función para mostrar notificación tipo toast
-function mostrarNotificacion(texto) {
   const contenedor = document.getElementById("notificaciones");
   if(!contenedor) return;
 
@@ -1173,39 +1164,87 @@ function mostrarNotificacion(texto) {
 
   contenedor.appendChild(div);
 
-  // Trigger animación
-  setTimeout(() => div.classList.add("mostrar"), 10);
+  /* activar animación */
+  setTimeout(()=>{
+    div.classList.add("mostrar");
+  },20);
 
-  // Desaparece después de 5 segundos
-  setTimeout(() => {
+  /* desaparecer */
+  setTimeout(()=>{
     div.classList.remove("mostrar");
-    setTimeout(() => div.remove(), 500);
-  }, 5000);
+
+    setTimeout(()=>{
+      div.remove();
+    },400);
+
+  }, tiempo);
+
 }
 
-// Función para notificación del sistema
-function notificacionSistema(texto) {
-  if ("Notification" in window) {
-    if (Notification.permission === "granted") {
-      new Notification(texto);
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then(permission => {
-        if(permission === "granted") new Notification(texto);
-      });
-    }
+/* ========================= */
+/* NOTIFICACIÓN DEL SISTEMA */
+/* ========================= */
+
+function notificacionSistema(texto){
+
+  if(!("Notification" in window)) return;
+
+  if(Notification.permission === "granted"){
+
+    new Notification("YOLUVAMI",{
+      body: texto,
+      icon: "23.jpeg"
+    });
+
   }
+
 }
 
-// Función que combina ambas notificaciones
+/* ========================= */
+/* FUNCIÓN GENERAL */
+/* ========================= */
+
 function notificar(texto){
-  mostrarNotificacion(texto); // Toast en la web
-  notificacionSistema(texto); // Notificación del sistema si es posible
+
+  /* notificación dentro de la web */
+  mostrarNotificacion(texto);
+
+  /* notificación del sistema */
+  notificacionSistema(texto);
+
 }
 
-// Ejemplo: notificación al cargar la página
-window.addEventListener("load", () => {
-  notificar("🔔 Nuevos productos disponibles");
+/* ========================= */
+/* EJECUTAR AL INICIAR APP */
+/* ========================= */
+
+window.addEventListener("load", ()=>{
+
+  /* activar notificaciones */
+  activarNotificaciones();
+
+  /* quitar splash */
+  setTimeout(()=>{
+
+    const splash = document.getElementById("splash");
+
+    if(splash){
+      splash.style.opacity="0";
+
+      setTimeout(()=>{
+        splash.style.display="none";
+      },500);
+    }
+
+  },1500);
+
+  /* notificación inicial */
+  setTimeout(()=>{
+    notificar("🔔 Nuevos productos disponibles");
+  },2000);
+
 });
+
 </script>
 
 </body>
