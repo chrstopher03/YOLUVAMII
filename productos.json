@@ -1,0 +1,12 @@
+[
+  {
+    "nombre": "Camisa Azul",
+    "precio": "$15",
+    "imagen": "30.jpeg"
+  },
+  {
+    "nombre": "Zapatos Negros",
+    "precio": "$25",
+    "imagen": "31.jpeg"
+  }
+]
