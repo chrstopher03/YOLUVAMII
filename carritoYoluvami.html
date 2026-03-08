@@ -112,7 +112,7 @@ function procederPedido(){
   window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`,"_blank");
 }
 
-// Descargar Factura PDF tipo ticket
+// Descargar Factura PDF tipo ticket centrada
 async function descargarFactura(){
   if(cart.length===0){ alert("Tu carrito está vacío 🛒"); return; }
   const { jsPDF } = window.jspdf;
@@ -122,7 +122,7 @@ async function descargarFactura(){
   const fecha = new Date();
   const numeroFactura = "FAC-"+Math.floor(Math.random()*1000000);
 
-  // Logo
+  // Logo centrado
   try{
     const imgData = await new Promise((res,rej)=>{
       const img = new Image();
@@ -136,38 +136,40 @@ async function descargarFactura(){
       };
       img.onerror = rej;
     });
-    doc.addImage(imgData,'JPEG',10,y,50,25);
+    doc.addImage(imgData,'JPEG',125,y,50,25); // Centrado en ticket 300pt ancho
   }catch(e){ console.log("Logo no cargó"); }
   y+=40;
 
+  // Títulos centrados
   doc.setFontSize(12);
-  doc.text("YOLUVAMI AUTOPARTES",150,y,{align:"center"}); y+=12;
-  doc.text("Factura de Venta",150,y,{align:"center"}); y+=12;
+  doc.text("YOLUVAMI AUTOPARTES",150,y,{align:"center"}); y+=14;
   doc.setFontSize(10);
-  doc.text(`Factura: ${numeroFactura}`,10,y+=12);
-  doc.text(`Fecha: ${fecha.toLocaleDateString()}`,10,y+=12);
-  doc.text(`Hora: ${fecha.toLocaleTimeString()}`,10,y+=12);
-  y+=5;
-  doc.text("---------------------------",10,y+=12);
-  doc.text("Producto        Cant  Total",10,y+=12);
-  doc.text("---------------------------",10,y+=12);
+  doc.text("Factura de Venta",150,y,{align:"center"}); y+=12;
+  doc.text(`Factura: ${numeroFactura}`,150,y,{align:"center"}); y+=12;
+  doc.text(`Fecha: ${fecha.toLocaleDateString()}`,150,y,{align:"center"}); y+=12;
+  doc.text(`Hora: ${fecha.toLocaleTimeString()}`,150,y,{align:"center"}); y+=10;
 
+  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
+  doc.text("Producto   Cant  Total",150,y,{align:"center"}); y+=12;
+  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
+
+  // Productos alineados tipo ticket
   cart.forEach(item=>{
     const cantidad = item.cantidad || 1;
     const subtotal = item.price*cantidad;
     let nombre = item.name.length>15 ? item.name.substring(0,15) : item.name;
     const linea = nombre.padEnd(15," ") + String(cantidad).padStart(3," ") + "   C$"+subtotal;
-    doc.text(linea,10,y+=12);
+    doc.text(linea,150,y,{align:"center"});
     total+=subtotal;
+    y+=12;
   });
 
-  doc.text("---------------------------",10,y+=12);
-  doc.setFontSize(14);
-  doc.text(`TOTAL: C$${total}`,10,y+=14);
-  y+=10;
+  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
+  doc.setFontSize(12);
+  doc.text(`TOTAL: C$${total}`,150,y,{align:"center"}); y+=14;
   doc.setFontSize(10);
-  doc.text("Gracias por su compra",150,y+=12,{align:"center"});
-  doc.text("YOLUVAMI",150,y+=12,{align:"center"});
+  doc.text("Gracias por su compra",150,y,{align:"center"}); y+=12;
+  doc.text("YOLUVAMI",150,y,{align:"center"});
 
   doc.save(`Factura_YOLUVAMI_${numeroFactura}.pdf`);
 }
