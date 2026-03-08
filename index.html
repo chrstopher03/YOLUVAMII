@@ -438,14 +438,26 @@ transition:opacity .5s ease;
   .hero{
     padding:60px 20px;
   }
-#notificaciones{
-position:fixed;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-z-index:9999;
-width:90%;
-max-width:400px;
+#notif/* Estilo para las notificaciones tipo toast */
+.notificacion {
+  background: #1e3a8a;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  max-width: 250px;
+  word-wrap: break-word;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
+}
+
+/* Animación de entrada */
+.notificacion.mostrar {
+  opacity: 1;
+  transform: translateX(0);
 }
 /* Fondo blanco al cargar la app */
 html, body {
@@ -626,6 +638,9 @@ animation:slideUp .4s ease;">
   
   </div>
 </div>
+<!-- Contenedor de notificaciones -->
+<div id="notificaciones" style="position:fixed;top:10px;right:10px;z-index:9999;"></div>
+
 <!-- MODAL PROMOCIÓN / IMAGEN -->
 <div class="modal" id="promoModal">
   <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
@@ -1147,24 +1162,49 @@ splash.style.display="none";
 
 },1500);
 
-});
-function mostrarNotificacion(texto){
+});// Función para mostrar notificación tipo toast
+function mostrarNotificacion(texto) {
+  const contenedor = document.getElementById("notificaciones");
+  if(!contenedor) return;
 
-const contenedor = document.getElementById("notificaciones");
+  const div = document.createElement("div");
+  div.className = "notificacion";
+  div.textContent = texto;
 
-const div = document.createElement("div");
-div.className = "notificacion";
-div.textContent = texto;
+  contenedor.appendChild(div);
 
-contenedor.appendChild(div);
+  // Trigger animación
+  setTimeout(() => div.classList.add("mostrar"), 10);
 
-setTimeout(()=>{
-div.remove();
-},5000);
-
+  // Desaparece después de 5 segundos
+  setTimeout(() => {
+    div.classList.remove("mostrar");
+    setTimeout(() => div.remove(), 500);
+  }, 5000);
 }
-window.addEventListener("load",()=>{
-mostrarNotificacion("🔔 Nuevos productos disponibles");
+
+// Función para notificación del sistema
+function notificacionSistema(texto) {
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      new Notification(texto);
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+        if(permission === "granted") new Notification(texto);
+      });
+    }
+  }
+}
+
+// Función que combina ambas notificaciones
+function notificar(texto){
+  mostrarNotificacion(texto); // Toast en la web
+  notificacionSistema(texto); // Notificación del sistema si es posible
+}
+
+// Ejemplo: notificación al cargar la página
+window.addEventListener("load", () => {
+  notificar("🔔 Nuevos productos disponibles");
 });
 </script>
 
