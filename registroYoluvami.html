@@ -273,14 +273,166 @@ function borrarRegistro(index){if(confirm("¿Eliminar este registro?")){historia
 /* GRAFICA */
 let graficaActual=null
 function crearGrafica(){const ctx=document.getElementById("grafica");if(!ctx)return;if(graficaActual) graficaActual.destroy();const meses={};historial.forEach(v=>{let mes=v.fecha.split("/")[1];meses[mes]=(meses[mes]||0)+v.total});graficaActual=new Chart(ctx,{type:"bar",data:{labels:Object.keys(meses),datasets:[{label:"Ingresos por Mes",data:Object.values(meses),backgroundColor:"#3b82f6"}]},options:{responsive:true,plugins:{legend:{display:false}}}})}
+async function generarPDF(){
 
-/* EXPORTAR */
-function exportarExcel(){const wb=XLSX.utils.book_new();const ws=XLSX.utils.json_to_sheet(historial);XLSX.utils.book_append_sheet(wb,ws,"Ventas");XLSX.writeFile(wb,"Ventas_YOLUVAMI.xlsx")}
-async function generarPDF(){const { jsPDF}=window.jspdf;const doc=new jsPDF();let y=20;doc.setFontSize(16);doc.text("YOLUVAMI Reporte",70,y);y+=15;let totalGeneral=0;historial.forEach(v=>{doc.text(`${v.fecha} ${v.hora} - C$${v.total}`,10,y);y+=8;totalGeneral+=v.total});doc.text(`TOTAL GENERAL: C$${totalGeneral}`,10,y+10);doc.save("Factura_YOLUVAMI.pdf")}
+const { jsPDF } = window.jspdf;
 
-/* WHATSAPP */
-function enviarWhatsApp(){let mensaje="📊 Resumen YOLUVAMI\n";let total=0;historial.forEach(v=>{mensaje+=`${v.fecha} ${v.hora} - C$${v.total}\n`;total+=v.total});mensaje+=`\nTotal General: C$${total}`;window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`)}
+/* tamaño ticket */
+const doc = new jsPDF({
+orientation:"p",
+unit:"mm",
+format:[80,200]
+});
 
+let y = 10;
+
+/* logo */
+let logo = await cargarImagenBase64("23.jpeg");
+doc.addImage(logo,"JPEG",25,y,30,20);
+
+y += 25;
+
+/* encabezado */
+doc.setFontSize(12);
+doc.text("YOLUVAMI",40,y,{align:"center"});
+
+y += 5;
+doc.setFontSize(8);
+doc.text("Factura de Venta",40,y,{align:"center"});
+
+y += 8;
+
+let numeroFactura = "FAC-" + Date.now();
+
+let v = historial[historial.length-1];
+
+/* datos */
+doc.setFontSize(8);
+doc.text(`Factura: ${numeroFactura}`,5,y);
+y+=4;
+
+doc.text(`Fecha: ${v.fecha}`,5,y);
+y+=4;
+
+doc.text(`Hora: ${v.hora}`,5,y);
+y+=4;
+
+doc.text(`Vendedor: ${v.vendedor || "N/A"}`,5,y);
+
+y+=6;
+
+/* linea */
+doc.line(5,y,75,y);
+
+y+=5;
+
+/* encabezado productos */
+doc.text("Producto",5,y);
+doc.text("Cant",40,y);
+doc.text("Total",60,y);
+
+y+=4;
+
+doc.line(5,y,75,y);
+
+y+=5;
+
+/* productos */
+
+v.productos.forEach(p=>{
+
+doc.text(p.name.substring(0,18),5,y);
+doc.text(String(p.cantidad),40,y);
+doc.text(`C$${p.subtotal}`,60,y);
+
+y+=5;
+
+});
+
+/* linea */
+
+doc.line(5,y,75,y);
+
+y+=6;
+
+/* total */
+
+doc.setFontSize(10);
+doc.text(`TOTAL: C$${v.total}`,5,y);
+
+y+=8;
+
+/* mensaje */
+
+doc.setFontSize(8);
+doc.text("Gracias por su compra",40,y,{align:"center"});
+
+y+=4;
+
+doc.text("YOLUVAMI",40,y,{align:"center"});
+
+doc.save("Ticket_YOLUVAMI.pdf");
+
+}
+
+/* convertir imagen */
+
+function cargarImagenBase64(url){
+
+return new Promise((resolve,reject)=>{
+
+let img=new Image();
+img.crossOrigin="anonymous";
+
+img.onload=function(){
+
+let canvas=document.createElement("canvas");
+canvas.width=this.width;
+canvas.height=this.height;
+
+let ctx=canvas.getContext("2d");
+ctx.drawImage(this,0,0);
+
+resolve(canvas.toDataURL("image/jpeg"));
+
+};
+
+img.onerror=reject;
+
+img.src=url;
+
+});
+
+}
+function enviarWhatsApp(){
+
+let mensaje="📊 Resumen YOLUVAMI\n\n";
+
+let total=0;
+
+/* nombre del vendedor */
+let vendedor = usuarioActual ? usuarioActual.user : "Desconocido";
+
+historial.forEach(v=>{
+
+mensaje+=`🧑 Vendedor: ${vendedor}\n`;
+mensaje+=`📅 ${v.fecha} ${v.hora}\n`;
+
+v.productos.forEach(p=>{
+mensaje+=`🛍 ${p.name} x${p.cantidad} - C$${p.subtotal}\n`;
+});
+
+mensaje+=`💰 Total venta: C$${v.total}\n\n`;
+
+total+=v.total;
+
+});
+
+mensaje+=`📈 TOTAL GENERAL: C$${total}`;
+
+window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
+
+}
 
 /* INICIAR SISTEMA */
 window.addEventListener("load",()=>{
