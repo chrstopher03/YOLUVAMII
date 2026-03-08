@@ -438,7 +438,37 @@ transition:opacity .5s ease;
   .hero{
     padding:60px 20px;
   }
+#notificaciones{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+z-index:9999;
+width:90%;
+max-width:400px;
+}
 
+.notificacion{
+background:#1e3a8a;
+color:white;
+padding:12px 15px;
+margin-bottom:10px;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.3);
+font-size:14px;
+animation:slideDown .4s ease;
+}
+
+@keyframes slideDown{
+from{
+opacity:0;
+transform:translateY(-20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
   .modalContent{
     max-width:700px;
   }
@@ -548,7 +578,7 @@ Productos confiables y de alta calidad.
   
   </div>
 </div>
-
+<div id="notificaciones"></div>
 <div id="updateToast" style="
 display:none;
 position:fixed;
@@ -1113,6 +1143,24 @@ splash.style.display="none";
 
 },1500);
 
+});
+function mostrarNotificacion(texto){
+
+const contenedor = document.getElementById("notificaciones");
+
+const div = document.createElement("div");
+div.className = "notificacion";
+div.textContent = texto;
+
+contenedor.appendChild(div);
+
+setTimeout(()=>{
+div.remove();
+},5000);
+
+}
+window.addEventListener("load",()=>{
+mostrarNotificacion("🔔 Nuevos productos disponibles");
 });
 </script>
 
