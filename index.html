@@ -381,7 +381,36 @@ line-height:1.5;
   fill: currentColor;
   margin-bottom:4px;
 }
+#splash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#1e3a8a;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:white;
+font-family:sans-serif;
+}
 
+#splash img{
+width:120px;
+height:120px;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+#splash h1{
+font-size:26px;
+letter-spacing:2px;
+}
+#splash{
+transition:opacity .5s ease;
+}
 /* RESPONSIVE ESCRITORIO */
 @media(min-width:768px){
   .product-grid{
@@ -428,7 +457,10 @@ transform:translate(-50%,0);
 </head>
 
 <body>
-
+<div id="splash">
+  <img src="23.jpeg" alt="logo">
+  <h1>YOLUVAMI</h1>
+</div>
 <header>
 <div id="status" class="status"></div>
 </header>
@@ -1069,6 +1101,19 @@ icon:"23.jpeg"
 }
 
 activarNotificaciones();
+window.addEventListener("load", ()=>{
+
+setTimeout(()=>{
+const splash = document.getElementById("splash");
+splash.style.opacity="0";
+
+setTimeout(()=>{
+splash.style.display="none";
+},500);
+
+},1500);
+
+});
 </script>
 
 </body>
