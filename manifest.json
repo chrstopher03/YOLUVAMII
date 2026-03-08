@@ -6,12 +6,12 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",   
+  "background_color": "#ffffff",
   "theme_color": "#1e3a8a",
   "description": "Aplicación oficial de YOLUVAMI",
   "icons": [
     {
-      "src": "23-maskable.png",      
+      "src": "23-maskable.png",   
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
