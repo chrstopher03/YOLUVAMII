@@ -119,18 +119,19 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const cartItems = document.getElementById("cartItems");
 const cartTotal = document.getElementById("cartTotal");
-const numeroWhatsApp = "50582337242";
+const numeroWhatsApp = "50583320030";
 
 // Renderizar carrito
 function renderCart(){
-  cartItems.innerHTML="";
-  let total=0;
-  if(cart.length===0){
-    cartItems.innerHTML=`<div class="empty">Tu carrito está vacío 🛍️</div>`;
-    cartTotal.innerHTML="";
+  cartItems.innerHTML = "";
+  let total = 0;
+  if(cart.length === 0){
+    cartItems.innerHTML = `<div class="empty">Tu carrito está vacío 🛍️</div>`;
+    cartTotal.innerHTML = "";
     return;
   }
-  cart.forEach((item,index)=>{
+
+  cart.forEach((item,index) => {
     const cantidad = item.cantidad || 1;
     total += item.price * cantidad;
     cartItems.innerHTML += `
@@ -144,29 +145,37 @@ function renderCart(){
       </div>
     `;
   });
+
   cartTotal.innerHTML = "Total a pagar: C$" + total;
 }
 
+// Eliminar item
 function removeItem(index){
   cart.splice(index,1);
   localStorage.setItem("cart",JSON.stringify(cart));
   renderCart();
 }
 
+// Vaciar carrito
 function vaciarCarrito(){
-  cart=[];
+  cart = [];
   localStorage.removeItem("cart");
   renderCart();
 }
 
-function volver(){ window.location.href="yoluvami.html"; }
+// Volver a la página principal
+function volver(){ 
+  window.location.href="yoluvami.html"; 
+}
+
+// Proceder al pedido por WhatsApp con ticket profesional
 function procederPedido() {
-  if (cart.length === 0) { 
-    alert("Tu carrito está vacío 🛒"); 
-    return; 
+  if(cart.length === 0){
+    alert("Tu carrito está vacío 🛒");
+    return;
   }
 
-  // Crear overlay para modal
+  // Crear overlay
   const overlay = document.createElement("div");
   overlay.style.position = "fixed";
   overlay.style.top = "0";
@@ -189,9 +198,9 @@ function procederPedido() {
   modal.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)";
   modal.style.fontFamily = "'Poppins', sans-serif";
 
-  // Contenido del modal
+  // Mensaje de confirmación
   const mensaje = document.createElement("p");
-  mensaje.innerText = "⚠️ Atención: Al realizar tu compra YOLUVAMI te enviará un pedido tipo factura que deberás mostrar al recibir tu entrega.";
+  mensaje.innerText = "⚠️ Atención: Al realizar tu compra, se enviará el pedido a WhatsApp con el resumen tipo ticket. Debes coordinar la entrega con YOLUVAMI.";
   mensaje.style.marginBottom = "20px";
   mensaje.style.fontSize = "14px";
   mensaje.style.color = "#111827";
@@ -213,34 +222,39 @@ function procederPedido() {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
-  // Al hacer clic en aceptar
+  // Al aceptar, se envía el pedido y se vacía el carrito
   aceptarBtn.addEventListener("click", () => {
     document.body.removeChild(overlay);
 
-    const fecha = new Date();
+    // Crear mensaje tipo ticket
     let total = 0;
-
-    // Cabecera del mensaje
-    let mensajeWA = "🛒 PEDIDO YOLUVAMI\n\n";
+    const fecha = new Date();
+    let mensajeWA = "```";
+    mensajeWA += "        PEDIDO YOLUVAMI\n";
+    mensajeWA += "--------------------------------\n";
     mensajeWA += `Fecha: ${fecha.toLocaleDateString()}\n`;
-    mensajeWA += `Hora: ${fecha.toLocaleTimeString()}\n`;
-    mensajeWA += "---------------------------\n";
-    mensajeWA += "Producto        Cant  Total\n";
-    mensajeWA += "---------------------------\n";
+    mensajeWA += `Hora : ${fecha.toLocaleTimeString()}\n`;
+    mensajeWA += "--------------------------------\n";
+    mensajeWA += "Producto              Cant  Total\n";
+    mensajeWA += "--------------------------------\n";
 
-    // Productos del carrito
     cart.forEach(p => {
       const cantidad = p.cantidad || 1;
       const subtotal = p.price * cantidad;
-      const nombre = p.name.padEnd(15, " "); // aseguramos espacio para alineación
+
+      const nombre = p.name.padEnd(20, " ");
       const cant = String(cantidad).padStart(3, " ");
-      mensajeWA += `${nombre}${cant}   C$${subtotal}\n`;
+      const sub = String(subtotal).padStart(6, " ");
+
+      mensajeWA += `${nombre}${cant}  C$${sub}\n`;
       total += subtotal;
     });
 
-    mensajeWA += "---------------------------\n";
-    mensajeWA += `TOTAL: C$${total}\n\n`;
+    mensajeWA += "--------------------------------\n";
+    mensajeWA += `TOTAL: C$${total}\n`;
+    mensajeWA += "--------------------------------\n\n";
     mensajeWA += "Quiero coordinar entrega\n";
+    mensajeWA += "```";
 
     // Abrir WhatsApp
     window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeWA)}`, "_blank");
@@ -251,12 +265,11 @@ function procederPedido() {
 }
 
 // Botones
-document.getElementById("btnPagar").addEventListener("click",procederPedido);
-document.getElementById("btnVaciar").addEventListener("click",vaciarCarrito);
-document.getElementById("btnRegresar").addEventListener("click",volver);
+document.getElementById("btnPagar").addEventListener("click", procederPedido);
+document.getElementById("btnVaciar").addEventListener("click", vaciarCarrito);
+document.getElementById("btnRegresar").addEventListener("click", volver);
 
 renderCart();
 </script>
-
 </body>
 </html>
