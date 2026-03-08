@@ -34,6 +34,50 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
 .vaciar{background:#e5e7eb;}
 .regresar{background:#111827;color:#fff;}
 .empty{text-align:center;padding:40px 0;color:#6b7280;}
+
+
+/* ====== BARRA INFERIOR FIJA ABAJO ====== */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #1e3a8a;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.bottomNav .navItem {
+  text-decoration: none;
+  color: #cbd5e1;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  transition: 0.3s;
+}
+.bottomNav .navItem.active,
+.bottomNav .navItem:hover {
+  color: #fff;
+}
+.bottomNav .navItem .icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom: 2px;
+}
+.icon{
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom:4px;
+}
 </style>
 </head>
 <body>
@@ -52,12 +96,37 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
 </div>
 </div>
 
+<!-- BARRA INFERIOR -->
+
+<nav class="bottomNav">
+  <a href="index.html" class="navItem active">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 12l9-9 9 9v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/>
+    </svg>
+    <small>Inicio</small>
+  </a>
+
+  <a href="carritoYoluvami.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M6 6h15l-1.5 9h-13L6 6zm0 0l-2-4H1"/>
+    </svg>
+    <small>Carrito</small>
+  </a>
+
+  <a href="registroYoluvami.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h12v2H3v-2zm0 4h8v2H3v-2z"/>
+    </svg>
+    <small>Ventas</small>
+  </a>
+</nav>
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const cartItems = document.getElementById("cartItems");
 const cartTotal = document.getElementById("cartTotal");
 const numeroWhatsApp = "50583320030";
 
+// Renderizar carrito
 function renderCart(){
   cartItems.innerHTML="";
   let total=0;
@@ -112,22 +181,22 @@ function procederPedido(){
   window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`,"_blank");
 }
 
-// Descargar Factura PDF tipo ticket centrada
+// Descargar Factura PDF tipo ticket profesional
 async function descargarFactura(){
   if(cart.length===0){ alert("Tu carrito está vacío 🛒"); return; }
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'pt', format:[300,400]});
+  const doc = new jsPDF({unit:'pt', format:[300,600]}); // ancho ticket 300pt
   let y=20;
   let total=0;
   const fecha = new Date();
   const numeroFactura = "FAC-"+Math.floor(Math.random()*1000000);
 
-  // Logo centrado
+  // Cargar logo centrado
   try{
     const imgData = await new Promise((res,rej)=>{
       const img = new Image();
       img.crossOrigin="anonymous";
-      img.src="23.jpeg"; // Logo en la misma carpeta
+      img.src="23.jpeg"; // Logo en la carpeta
       img.onload = ()=>{ 
         const c = document.createElement("canvas");
         c.width=img.width; c.height=img.height;
@@ -136,9 +205,9 @@ async function descargarFactura(){
       };
       img.onerror = rej;
     });
-    doc.addImage(imgData,'JPEG',125,y,50,25); // Centrado en ticket 300pt ancho
+    doc.addImage(imgData,'JPEG',125,y,50,50); // Centrado en 300pt
   }catch(e){ console.log("Logo no cargó"); }
-  y+=40;
+  y+=60;
 
   // Títulos centrados
   doc.setFontSize(12);
@@ -149,16 +218,19 @@ async function descargarFactura(){
   doc.text(`Fecha: ${fecha.toLocaleDateString()}`,150,y,{align:"center"}); y+=12;
   doc.text(`Hora: ${fecha.toLocaleTimeString()}`,150,y,{align:"center"}); y+=10;
 
+  // Separador
   doc.text("---------------------------",150,y,{align:"center"}); y+=12;
-  doc.text("Producto   Cant  Total",150,y,{align:"center"}); y+=12;
+  doc.setFontSize(9);
+  doc.text("Producto         Cant  Total",150,y,{align:"center"}); y+=12;
   doc.text("---------------------------",150,y,{align:"center"}); y+=12;
 
-  // Productos alineados tipo ticket
+  // Productos tipo columnas
   cart.forEach(item=>{
     const cantidad = item.cantidad || 1;
     const subtotal = item.price*cantidad;
-    let nombre = item.name.length>15 ? item.name.substring(0,15) : item.name;
-    const linea = nombre.padEnd(15," ") + String(cantidad).padStart(3," ") + "   C$"+subtotal;
+    const nombre = item.name.length>15 ? item.name.substring(0,15) : item.name.padEnd(15," ");
+    const cant = String(cantidad).padStart(3," ");
+    const linea = `${nombre}${cant}   C$${subtotal}`;
     doc.text(linea,150,y,{align:"center"});
     total+=subtotal;
     y+=12;
