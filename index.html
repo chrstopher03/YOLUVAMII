@@ -1045,7 +1045,30 @@ toast.style.display = "none";
 },3000);
 
 }
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker.register("sw.js")
+.then(()=>console.log("SW registrado"))
+.catch(err=>console.log(err));
+}
 
+async function activarNotificaciones(){
+
+if(!("Notification" in window)) return;
+
+let permiso = await Notification.requestPermission();
+
+if(permiso === "granted"){
+
+new Notification("YOLUVAMI",{
+body:"Notificaciones activadas 🔔",
+icon:"23.jpeg"
+});
+
+}
+
+}
+
+activarNotificaciones();
 </script>
 
 </body>
