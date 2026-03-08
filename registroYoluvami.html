@@ -130,7 +130,7 @@ YOLUVAMI
 <h3>Resumen General</h3>
 <div id="resumen"></div>
 </div>
-
+<button onclick="corteCaja()">📊 Corte de Caja</button>
 <div class="card">
 <h3>⚠ Productos Agotados</h3>
 <div id="agotados"></div>
@@ -222,17 +222,33 @@ function actualizarTabla(){let total=0;const tbody=document.getElementById("tabl
 
 /* ELIMINAR PRODUCTO */
 function eliminar(i){ventaActual.splice(i,1);actualizarTabla()}
-
 /* FINALIZAR VENTA */
 function finalizarVenta(){
-if(ventaActual.length===0){alerta("No hay productos","#dc2626");return}
+
+if(ventaActual.length===0){
+alerta("No hay productos","#dc2626");
+return
+}
+
 const fecha=new Date()
 const total=ventaActual.reduce((acc,p)=>acc+p.subtotal,0)
-historial.push({fecha:fecha.toLocaleDateString(),hora:fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),productos:[...ventaActual],total})
+
+/* guardar venta con vendedor */
+historial.push({
+fecha:fecha.toLocaleDateString(),
+hora:fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+vendedor: usuarioActual.user,
+productos:[...ventaActual],
+total
+})
+
 localStorage.setItem("ventasYoluvami",JSON.stringify(historial))
+
 ventaActual=[]
+
 actualizarTabla()
 mostrarHistorial()
+
 }
 
 /* HISTORIAL */
@@ -444,6 +460,50 @@ mostrarHistorial()
 mostrarAgotados()
 cargarProductosStock()
 })
+function corteCaja(){
+
+if(historial.length===0){
+alert("No hay ventas registradas");
+return;
+}
+
+let vendedores = {};
+
+historial.forEach(v => {
+
+let nombre = v.vendedor || "Desconocido";
+
+if(!vendedores[nombre]){
+vendedores[nombre] = {
+ventas:0,
+total:0
+};
+}
+
+vendedores[nombre].ventas += 1;
+vendedores[nombre].total += v.total;
+
+});
+
+let mensaje = "📊 CORTE DE CAJA\n\n";
+
+let totalGeneral = 0;
+
+for(let v in vendedores){
+
+mensaje += `🧑 ${v}\n`;
+mensaje += `Ventas: ${vendedores[v].ventas}\n`;
+mensaje += `Total: C$${vendedores[v].total}\n\n`;
+
+totalGeneral += vendedores[v].total;
+
+}
+
+mensaje += `💰 TOTAL GENERAL: C$${totalGeneral}`;
+
+alert(mensaje);
+
+}
 </script>
 </body>
 </html>
