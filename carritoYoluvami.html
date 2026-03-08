@@ -7,8 +7,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
 :root{
   --primary:#1e3a8a;
@@ -30,11 +28,9 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
 .actions{margin-top:25px;display:flex;flex-direction:column;gap:12px;}
 .btn{padding:14px;border:none;border-radius:15px;font-weight:600;cursor:pointer;font-size:14px;}
 .pagar{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;}
-.factura{background:#10b981;color:#fff;}
 .vaciar{background:#e5e7eb;}
 .regresar{background:#111827;color:#fff;}
 .empty{text-align:center;padding:40px 0;color:#6b7280;}
-
 
 /* ====== BARRA INFERIOR FIJA ABAJO ====== */
 .bottomNav {
@@ -90,14 +86,12 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
 
 <div class="actions">
   <button id="btnPagar" class="btn pagar">Proceder al pedido</button>
-  <button id="btnFactura" class="btn factura">Descargar Factura</button>
   <button id="btnVaciar" class="btn vaciar">Vaciar carrito</button>
   <button id="btnRegresar" class="btn regresar">Regresar</button>
 </div>
 </div>
 
 <!-- BARRA INFERIOR -->
-
 <nav class="bottomNav">
   <a href="index.html" class="navItem active">
     <svg viewBox="0 0 24 24" class="icon">
@@ -120,6 +114,7 @@ header{background:#fff;padding:18px;text-align:center;font-weight:700;font-size:
     <small>Ventas</small>
   </a>
 </nav>
+
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const cartItems = document.getElementById("cartItems");
@@ -166,89 +161,87 @@ function vaciarCarrito(){
 
 function volver(){ window.location.href="yoluvami.html"; }
 
-// Proceder al pedido por WhatsApp
-function procederPedido(){
-  if(cart.length===0){ alert("Tu carrito está vacío 🛒"); return; }
-  let total=0;
-  let mensaje="🛒 *Nuevo Pedido YOLUVAMI* %0A%0A";
-  cart.forEach(p=>{
-    const cantidad = p.cantidad || 1;
-    const subtotal = p.price*cantidad;
-    mensaje+=`• ${p.name} x${cantidad} - C$${subtotal}%0A`;
-    total += subtotal;
+// Proceder al pedido por WhatsApp con modal profesional y vaciar carrito
+function procederPedido() {
+  if (cart.length === 0) { 
+    alert("Tu carrito está vacío 🛒"); 
+    return; 
+  }
+
+  // Crear overlay
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.background = "rgba(0,0,0,0.5)";
+  overlay.style.display = "flex";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+  overlay.style.zIndex = "9999";
+
+  // Crear modal
+  const modal = document.createElement("div");
+  modal.style.background = "#fff";
+  modal.style.padding = "25px 30px";
+  modal.style.borderRadius = "15px";
+  modal.style.maxWidth = "400px";
+  modal.style.textAlign = "center";
+  modal.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)";
+  modal.style.fontFamily = "'Poppins', sans-serif";
+
+  // Contenido del modal
+  const mensaje = document.createElement("p");
+  mensaje.innerText = "⚠️ Atención: Al realizar tu compra YOLUVAMI te enviará una factura que tendrás que mostrar antes de que se entregue tu pedido.";
+  mensaje.style.marginBottom = "20px";
+  mensaje.style.fontSize = "14px";
+  mensaje.style.color = "#111827";
+
+  // Botón aceptar
+  const aceptarBtn = document.createElement("button");
+  aceptarBtn.innerText = "Aceptar";
+  aceptarBtn.style.background = "#1e3a8a";
+  aceptarBtn.style.color = "#fff";
+  aceptarBtn.style.padding = "10px 18px";
+  aceptarBtn.style.border = "none";
+  aceptarBtn.style.borderRadius = "12px";
+  aceptarBtn.style.fontWeight = "600";
+  aceptarBtn.style.cursor = "pointer";
+  aceptarBtn.style.fontSize = "14px";
+
+  modal.appendChild(mensaje);
+  modal.appendChild(aceptarBtn);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  aceptarBtn.addEventListener("click", () => {
+    document.body.removeChild(overlay);
+let total = 0;
+let mensajeWA = "🛒 *PEDIDO YOLUVAMI*\n";
+mensajeWA += "========================\n\n";
+
+cart.forEach(p => {
+  const cantidad = p.cantidad || 1;
+  const subtotal = p.price * cantidad;
+  // Nombre alineado, cantidad y subtotal bien organizado
+  mensajeWA += `• ${p.name} x${cantidad} — C$${subtotal}\n`;
+  total += subtotal;
+});
+
+mensajeWA += "\n========================\n";
+mensajeWA += `💰 *TOTAL: C$${total}*\n`;
+mensajeWA += `📅 Fecha: ${new Date().toLocaleDateString()}  ⏰ Hora: ${new Date().toLocaleTimeString()}\n`;
+mensajeWA += "\nGracias por comprar en *YOLUVAMI AUTOPARTES* 🚗✨";
+
+window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeWA)}`, "_blank");
+    // Vaciar carrito
+    vaciarCarrito();
   });
-  mensaje+=`%0A💰 *Total: C$${total}*`;
-  window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`,"_blank");
-}
-
-// Descargar Factura PDF tipo ticket profesional
-async function descargarFactura(){
-  if(cart.length===0){ alert("Tu carrito está vacío 🛒"); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'pt', format:[300,600]}); // ancho ticket 300pt
-  let y=20;
-  let total=0;
-  const fecha = new Date();
-  const numeroFactura = "FAC-"+Math.floor(Math.random()*1000000);
-
-  // Cargar logo centrado
-  try{
-    const imgData = await new Promise((res,rej)=>{
-      const img = new Image();
-      img.crossOrigin="anonymous";
-      img.src="23.jpeg"; // Logo en la carpeta
-      img.onload = ()=>{ 
-        const c = document.createElement("canvas");
-        c.width=img.width; c.height=img.height;
-        c.getContext("2d").drawImage(img,0,0);
-        res(c.toDataURL("image/jpeg"));
-      };
-      img.onerror = rej;
-    });
-    doc.addImage(imgData,'JPEG',125,y,50,50); // Centrado en 300pt
-  }catch(e){ console.log("Logo no cargó"); }
-  y+=60;
-
-  // Títulos centrados
-  doc.setFontSize(12);
-  doc.text("YOLUVAMI AUTOPARTES",150,y,{align:"center"}); y+=14;
-  doc.setFontSize(10);
-  doc.text("Factura de Venta",150,y,{align:"center"}); y+=12;
-  doc.text(`Factura: ${numeroFactura}`,150,y,{align:"center"}); y+=12;
-  doc.text(`Fecha: ${fecha.toLocaleDateString()}`,150,y,{align:"center"}); y+=12;
-  doc.text(`Hora: ${fecha.toLocaleTimeString()}`,150,y,{align:"center"}); y+=10;
-
-  // Separador
-  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
-  doc.setFontSize(9);
-  doc.text("Producto         Cant  Total",150,y,{align:"center"}); y+=12;
-  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
-
-  // Productos tipo columnas
-  cart.forEach(item=>{
-    const cantidad = item.cantidad || 1;
-    const subtotal = item.price*cantidad;
-    const nombre = item.name.length>15 ? item.name.substring(0,15) : item.name.padEnd(15," ");
-    const cant = String(cantidad).padStart(3," ");
-    const linea = `${nombre}${cant}   C$${subtotal}`;
-    doc.text(linea,150,y,{align:"center"});
-    total+=subtotal;
-    y+=12;
-  });
-
-  doc.text("---------------------------",150,y,{align:"center"}); y+=12;
-  doc.setFontSize(12);
-  doc.text(`TOTAL: C$${total}`,150,y,{align:"center"}); y+=14;
-  doc.setFontSize(10);
-  doc.text("Gracias por su compra",150,y,{align:"center"}); y+=12;
-  doc.text("YOLUVAMI",150,y,{align:"center"});
-
-  doc.save(`Factura_YOLUVAMI_${numeroFactura}.pdf`);
 }
 
 // Botones
 document.getElementById("btnPagar").addEventListener("click",procederPedido);
-document.getElementById("btnFactura").addEventListener("click",descargarFactura);
 document.getElementById("btnVaciar").addEventListener("click",vaciarCarrito);
 document.getElementById("btnRegresar").addEventListener("click",volver);
 
@@ -257,5 +250,3 @@ renderCart();
 
 </body>
 </html>
-
-
