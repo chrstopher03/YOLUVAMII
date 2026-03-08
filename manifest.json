@@ -1,13 +1,21 @@
 {
   "name": "YOLUVAMI",
   "short_name": "YOLUVAMI",
+  "id": "/",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1e3a8a",
   "orientation": "portrait",
+  "background_color": "#ffffff",   
+  "theme_color": "#1e3a8a",
   "description": "Aplicación oficial de YOLUVAMI",
   "icons": [
+    {
+      "src": "23-maskable.png",      
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "23.jpeg",
       "sizes": "192x192",
@@ -19,12 +27,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "23.jpeg",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ]
 }
