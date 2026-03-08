@@ -953,40 +953,63 @@ function cerrarPromo(){
 function seguirAhora(){
   window.open("https://www.tiktok.com/@yoluvami_autopart?_r=1&_t=ZS-94EaAHGjUhk", "_blank");
 }
-
 /* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
 
 function actualizarEstado(){
+
   const ahora = new Date();
   const opciones = { timeZone: 'America/Managua', hour12: false };
   const horaNica = new Date(ahora.toLocaleString('en-US', opciones));
 
+  const dia = horaNica.getDay(); // 0 = domingo
   const hora = horaNica.getHours();
   const minutos = horaNica.getMinutes();
   const totalMinutos = hora * 60 + minutos;
 
-  const apertura = 8 * 60 + 30;
-  const cierre = 16 * 60;
+  const apertura = 8 * 60 + 30; // 8:30 AM
+  const cierre = 16 * 60;       // 4:00 PM
+
+  /* ===================== */
+  /* DOMINGO CERRADO */
+  /* ===================== */
+
+  if(dia === 0){
+    statusElement.innerHTML = "🔴 Cerrado · Hoy es domingo";
+    statusElement.className = "status cerrado";
+    return;
+  }
+
+  /* ===================== */
+  /* HORARIO NORMAL */
+  /* ===================== */
 
   if(totalMinutos >= apertura && totalMinutos < cierre){
+
     const faltan = cierre - totalMinutos;
     const h = Math.floor(faltan / 60);
     const m = faltan % 60;
+
     statusElement.innerHTML = `🟢 Abierto · Cierra en ${h}h ${m}m`;
     statusElement.className = "status abierto";
+
   }else{
+
     let faltan;
+
     if(totalMinutos < apertura){
       faltan = apertura - totalMinutos;
     }else{
       faltan = (24 * 60 - totalMinutos) + apertura;
     }
+
     const h = Math.floor(faltan / 60);
     const m = faltan % 60;
+
     statusElement.innerHTML = `🔴 Cerrado · Abre en ${h}h ${m}m`;
     statusElement.className = "status cerrado";
+
   }
 }
 
