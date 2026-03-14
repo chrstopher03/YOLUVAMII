@@ -784,6 +784,33 @@ Limpiador en aerosol de secado rápido diseñado para eliminar polvo, grasa, hum
 {name:"Grasa Blanca de Litio MANNOL 8121",price:200,cat:"motor",img:"024.jpeg",desc:`Lubricante en aerosol de alta calidad a base de litio, diseñado para reducir la fricción y proteger piezas metálicas contra el desgaste, la humedad y la corrosión. Proporciona una lubricación duradera en bisagras, engranajes, rieles y mecanismos móviles. Ideal para uso automotriz, industrial y doméstico.`},
 {name:"Cables de Arranque Profesional 10FT – 6 Gauge (400 AMP)",price:1350,cat:"motor",img:"025.jpeg",desc:`Cables de arranque resistentes diseñados para auxiliar baterías descargadas de forma rápida y segura. Con una longitud de 10 pies y calibre 6 Gauge, ofrecen excelente conductividad para vehículos de gasolina hasta 3.5L y diésel hasta 5.5L.
 `},
+
+
+
+{name:"Limpiador de inyectores Liqui Moly Injection Reiniger",price:3200,cat:"motor",img:"130.jpeg",desc:`Aditivo diseñado para limpiar el sistema de inyección de gasolina, eliminando depósitos en inyectores y válvulas. Ayuda a mejorar la combustión, el rendimiento del motor y reducir emisiones.
+.
+`},
+{name:"Espuma extintora portátil",price:190,cat:"motor",img:"131.jpeg",desc:`Espuma extintora portátil diseñada para apagar incendios pequeños de forma rápida y segura. Ideal para vehículos, talleres, hogares y emergencias inesperadas.`},
+{name:"Aromatizante para Auto Air Freshener – Vent Clips",price:170,cat:"motor",img:"136.jpeg",desc:`Aromatizante para automóvil con difusores de aceite perfumado que se colocan en las rejillas del aire del vehículo. Ayuda a eliminar malos olores y mantener un ambiente fresco y agradable dentro del auto. Disponible en presentaciones de 3 y 4 piezas con diferentes fragancias.`},
+{name:"Aromatizante para auto Little Trees Fiber Can – Cherry Blast",price:180,cat:"motor",img:"137.jpeg",desc:`Aromatizante en lata diseñado para eliminar malos olores y mantener un ambiente fresco dentro del vehículo con un agradable aroma a cereza.
+`},
+{name:"Soporte Universal para Smartphone SWISS DRIVE",price:330,cat:"motor",img:"138.jpeg",desc:`Soporte para celular con diseño universal y base de succión resistente. Cuenta con rotación de 360° para ajustar el ángulo de visión según tu comodidad. Ideal para mantener el teléfono seguro mientras conduces, brindando mayor practicidad y seguridad al manejar.`},
+{name:"Esponjas aplicadoras de cera o pulido Meguiar’s",price:100,cat:"motor",img:"139.jpeg",desc:`Esponjas de espuma suave diseñadas para la aplicación uniforme de ceras, pulimentos y abrillantadores en la carrocería del vehículo. Su material de alta calidad permite distribuir el producto de forma pareja sin rayar la pintura.`},
+{name:"Aromatizante en spray para auto Little Trees New Car Scent",price:170,cat:"motor",img:"140.jpeg",desc:`Aromatizante en spray que elimina malos olores y deja un agradable aroma a auto nuevo en el interior del vehículo.
+
+`},
+
+
+{name:"ATF Type A – Master Lube",price:150,cat:"motor",img:"141.jpeg",desc:`ATF Type A – Master Lube
+Fluido para transmisiones automáticas diseñado para lubricar, enfriar y proteger los componentes internos de la caja. Ayuda a lograr cambios suaves, reduce el desgaste y prolonga la vida útil del sistema.`},
+{name:"Grasa Golden Oil Litio EP-2 (500 g)",price:650,cat:"motor",img:"142.jpeg",desc:`Grasa multipropósito de litio diseñada para la lubricación y protección de piezas mecánicas. Ofrece excelente resistencia a la presión, al desgaste y a la humedad, ayudando a prolongar la vida útil de rodamientos, chasis y componentes automotrices. Ideal para uso en vehículos, maquinaria y equipos en general`},
+
+{name:"Silicón Mega Grey",price:200,cat:"motor",img:"143.jpeg",desc:`Sellador de silicón de alta resistencia diseñado para crear o reforzar empaques en motores y componentes automotrices. Ideal para soportar vibraciones, altas temperaturas y evitar fugas.
+`},
+{name:"Buje / Goma de Amortiguador",price:50,cat:"motor",img:"144.jpeg",desc:`Buje de goma fabricado con material resistente y flexible, diseñado para absorber vibraciones y proteger los componentes del sistema de suspensión del vehículo.`},
+{name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L",price:190,cat:"motor",img:"134.jpeg",desc:`Aceite mineral especialmente formulado para motores de motocicletas de 4 tiempos. Proporciona excelente lubricación, protección contra el desgaste y mejor desempeño del motor en diferentes condiciones de manejo. Su fórmula ayuda a mantener el motor limpio y a prolongar su vida útil.
+
+`},
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -961,8 +988,7 @@ function cerrarPromo(){
 
 function seguirAhora(){
   window.open("https://www.tiktok.com/@yoluvami_autopart?_r=1&_t=ZS-94EaAHGjUhk", "_blank");
-}
-/* ===================== */
+}/* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
 
@@ -972,13 +998,14 @@ function actualizarEstado(){
   const opciones = { timeZone: 'America/Managua', hour12: false };
   const horaNica = new Date(ahora.toLocaleString('en-US', opciones));
 
-  const dia = horaNica.getDay(); // 0 = domingo
+  const dia = horaNica.getDay(); // 0=domingo, 6=sábado
   const hora = horaNica.getHours();
   const minutos = horaNica.getMinutes();
   const totalMinutos = hora * 60 + minutos;
 
   const apertura = 8 * 60 + 30; // 8:30 AM
-  const cierre = 16 * 60;       // 4:00 PM
+
+  let cierre;
 
   /* ===================== */
   /* DOMINGO CERRADO */
@@ -991,7 +1018,18 @@ function actualizarEstado(){
   }
 
   /* ===================== */
-  /* HORARIO NORMAL */
+  /* SABADO */
+  /* ===================== */
+
+  if(dia === 6){
+    cierre = 14 * 60 + 30; // 2:30 PM
+  }else{
+    /* LUNES A VIERNES */
+    cierre = 17 * 60; // 5:00 PM
+  }
+
+  /* ===================== */
+  /* HORARIO ABIERTO */
   /* ===================== */
 
   if(totalMinutos >= apertura && totalMinutos < cierre){
@@ -1024,7 +1062,11 @@ function actualizarEstado(){
 
 setInterval(actualizarEstado,60000);
 actualizarEstado();
+
+/* ===================== */
 /* FILTROS */
+/* ===================== */
+
 categoriaFiltro.addEventListener("change",mostrarProductos);
 precioMin.addEventListener("input",mostrarProductos);
 precioMax.addEventListener("input",mostrarProductos);

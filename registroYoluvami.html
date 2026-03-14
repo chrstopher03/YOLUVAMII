@@ -162,7 +162,7 @@ YOLUVAMI
 function alerta(msg,color="#2563eb"){const div=document.createElement("div");div.innerText=msg;div.style.position="fixed";div.style.bottom="20px";div.style.right="20px";div.style.background=color;div.style.color="white";div.style.padding="12px 18px";div.style.borderRadius="12px";div.style.fontWeight="600";div.style.boxShadow="0 6px 16px rgba(0,0,0,0.3)";div.style.zIndex="9999";div.style.fontFamily="Poppins";document.body.appendChild(div);setTimeout(()=>{div.remove()},3000)}
 
 /* USUARIOS */
-const usuariosSistema=[{user:"michelle",pass:"1234",rol:"jefa"},{user:"auner",pass:"1234",rol:"trabajador"},{user:"luis",pass:"1234",rol:"trabajador"}]
+const usuariosSistema=[{user:"michelle",pass:"yomara7412",rol:"jefa"},{user:"auner",pass:"1234",rol:"trabajador"},{user:"luis",pass:"1234",rol:"trabajador"}]
 let usuarioActual=null
 
 function login(){const user=document.getElementById("usuario").value.toLowerCase();const pass=document.getElementById("clave").value;const encontrado=usuariosSistema.find(u=>u.user===user && u.pass===pass);if(encontrado){usuarioActual=encontrado;localStorage.setItem("usuarioActivo",JSON.stringify(encontrado));document.getElementById("loginScreen").style.display="none";document.getElementById("usuarioActivo").innerText=encontrado.user;mostrarHistorial();cargarProductosStock()} else{document.getElementById("errorLogin").innerText="Usuario o contraseña incorrecta"}}
