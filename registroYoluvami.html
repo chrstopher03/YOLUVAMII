@@ -77,21 +77,44 @@ canvas{width:100%!important;height:300px!important}
 </style>
 </head>
 <body>
-
 <div id="loginScreen">
 <div class="loginBox">
+
 <h2>Acceso</h2>
+
 <input type="text" id="usuario" placeholder="Usuario">
+
 <input type="password" id="clave" placeholder="Contraseña">
+
 <button onclick="login()">Ingresar</button>
+
 <p id="errorLogin" style="color:red"></p>
+
+<button onclick="mostrarRecuperar()" style="background:#6b7280">
+Olvidé mi contraseña
+</button>
+
+<div id="recuperarBox" style="display:none;margin-top:10px">
+
+<input type="text" id="usuarioRecuperar" placeholder="Usuario">
+
+<input type="password" id="nuevaClave" placeholder="Nueva contraseña">
+
+<button onclick="cambiarClave()">Cambiar contraseña</button>
+
+</div>
+
 </div>
 </div>
 
 <header>
 YOLUVAMI
-<div style="font-size:13px;margin-top:5px">Usuario: <span id="usuarioActivo"></span></div>
+<div style="font-size:13px;margin-top:5px">
+Usuario: <span id="usuarioActivo"></span>
+</div>
+
 <button class="logoutBtn" onclick="logout()">Cerrar sesión</button>
+</header>
 </header>
 
 <div class="container">
@@ -161,10 +184,37 @@ YOLUVAMI
 /* ALERTAS BONITAS */
 function alerta(msg,color="#2563eb"){const div=document.createElement("div");div.innerText=msg;div.style.position="fixed";div.style.bottom="20px";div.style.right="20px";div.style.background=color;div.style.color="white";div.style.padding="12px 18px";div.style.borderRadius="12px";div.style.fontWeight="600";div.style.boxShadow="0 6px 16px rgba(0,0,0,0.3)";div.style.zIndex="9999";div.style.fontFamily="Poppins";document.body.appendChild(div);setTimeout(()=>{div.remove()},3000)}
 
-/* USUARIOS */
-const usuariosSistema=[{user:"michelle",pass:"yomara7412",rol:"jefa"},{user:"auner",pass:"1234",rol:"trabajador"},{user:"luis",pass:"1234",rol:"trabajador"}]
-let usuarioActual=null
+let usuarioActual = null;
 
+let usuariosSistema = JSON.parse(localStorage.getItem("usuariosYoluvami")) || [
+{user:"michelle",pass:"yomara7412",rol:"jefa"},
+{user:"auner",pass:"1234",rol:"trabajador"},
+{user:"luis",pass:"1234",rol:"trabajador"}
+];
+function mostrarRecuperar(){
+document.getElementById("recuperarBox").style.display="block";
+}
+
+function cambiarClave(){
+
+const user = document.getElementById("usuarioRecuperar").value.toLowerCase();
+const nueva = document.getElementById("nuevaClave").value;
+
+let encontrado = usuariosSistema.find(u=>u.user===user);
+
+if(!encontrado){
+alerta("Usuario no encontrado","#dc2626");
+return;
+}
+
+encontrado.pass = nueva;
+
+localStorage.setItem("usuariosYoluvami",JSON.stringify(usuariosSistema));
+
+alerta("Contraseña actualizada","#16a34a");
+
+document.getElementById("recuperarBox").style.display="none";
+}
 function login(){const user=document.getElementById("usuario").value.toLowerCase();const pass=document.getElementById("clave").value;const encontrado=usuariosSistema.find(u=>u.user===user && u.pass===pass);if(encontrado){usuarioActual=encontrado;localStorage.setItem("usuarioActivo",JSON.stringify(encontrado));document.getElementById("loginScreen").style.display="none";document.getElementById("usuarioActivo").innerText=encontrado.user;mostrarHistorial();cargarProductosStock()} else{document.getElementById("errorLogin").innerText="Usuario o contraseña incorrecta"}}
 function logout(){localStorage.removeItem("usuarioActivo");location.reload()}
 
