@@ -295,6 +295,20 @@ const productosBase=[
 {name:"Silicón Mega Grey",price:200,img:"143.jpeg",stock:4},
 {name:"Buje / Goma de Amortiguador",price:50,img:"144.jpeg",stock:4},
 {name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L",price:190,img:"134.jpeg",stock:4},
+
+
+{name:"Auto Super Heavy Duty Power Brake DOT 3",price:85,img:"148.jpeg",stock:4},
+
+{name:"Perilla Universal para Palanca de Cambios",price:270,img:"150.jpeg",stock:4},
+{name:"Aceite de motor TotalEnergies Rubia TIR 7400 15W-40",price:1060,img:"149.jpeg",stock:4},
+{name:"Mannol M-40 Lubricant 9892",price:180,img:"151.jpeg",stock:4},
+
+
+{name:"Formula 1 Protectant Spray",price:250,img:"152.jpeg",stock:4},
+
+{name:"Bombillos Automotrices",price:40,cat:"motor",img:"153.jpeg",stock:4},
+{name:"Envase para Combustible 5 Litros (5L)",price:390,img:"154.jpeg",stock:4},
+{name:"Havoline Gear Oil 80W-90",price:350,img:"155.jpeg",stock:4},
 ]
 let productos = JSON.parse(localStorage.getItem("stockYoluvami")) || productosBase
 let ventaActual=[]
@@ -384,243 +398,233 @@ function mostrarAgotados(){
 const div=document.getElementById("agotados");if(!div)return;div.innerHTML=""
 productos.forEach(p=>{if(p.stock===0){div.innerHTML+=`<div style="display:flex;align-items:center;gap:10px;background:#fff1f2;padding:8px;border-radius:10px;margin-bottom:6px"><img src="${p.img}" style="width:30px;border-radius:6px"><span style="color:#dc2626;font-weight:600">${p.name} AGOTADO</span></div>`}})
 }
-
-/* AGREGAR STOCK */
-function cargarProductosStock(){
-const selectStock=document.getElementById("productoStock");if(!selectStock)return;selectStock.innerHTML=""
-productos.forEach((p,i)=>{selectStock.innerHTML+=`<option value="${i}">${p.name} - Stock: ${p.stock}</option>`})
+/* ==================== AGREGAR STOCK ==================== */
+function cargarProductosStock() {
+    const selectStock = document.getElementById("productoStock");
+    if (!selectStock) return;
+    selectStock.innerHTML = "";
+    productos.forEach((p, i) => {
+        selectStock.innerHTML += `<option value="${i}">${p.name} - Stock: ${p.stock}</option>`;
+    });
 }
-cargarProductosStock()
-function agregarStock(){
-const index=parseInt(document.getElementById("productoStock").value)
-const cantidad=parseInt(document.getElementById("cantidadStock").value)
-if(!cantidad||cantidad<=0){alerta("Cantidad inválida","#dc2626");return}
-productos[index].stock+=cantidad
-guardarStock()
-document.getElementById("cantidadStock").value=""
-alerta("Stock actualizado","#16a34a")
+cargarProductosStock();
+
+function agregarStock() {
+    const index = parseInt(document.getElementById("productoStock").value);
+    const cantidad = parseInt(document.getElementById("cantidadStock").value);
+    if (!cantidad || cantidad <= 0) {
+        alerta("Cantidad inválida", "#dc2626");
+        return;
+    }
+    productos[index].stock += cantidad;
+    guardarStock();
+    document.getElementById("cantidadStock").value = "";
+    alerta("Stock actualizado", "#16a34a");
 }
 
-/* BORRAR REGISTRO */
-function borrarRegistro(index){if(confirm("¿Eliminar este registro?")){historial.splice(index,1);localStorage.setItem("ventasYoluvami",JSON.stringify(historial));mostrarHistorial()}}
+/* ==================== BORRAR REGISTRO ==================== */
+function borrarRegistro(index) {
+    if (confirm("¿Eliminar este registro?")) {
+        historial.splice(index, 1);
+        localStorage.setItem("ventasYoluvami", JSON.stringify(historial));
+        mostrarHistorial();
+    }
+}
 
-/* GRAFICA */
-let graficaActual=null
-function crearGrafica(){const ctx=document.getElementById("grafica");if(!ctx)return;if(graficaActual) graficaActual.destroy();const meses={};historial.forEach(v=>{let mes=v.fecha.split("/")[1];meses[mes]=(meses[mes]||0)+v.total});graficaActual=new Chart(ctx,{type:"bar",data:{labels:Object.keys(meses),datasets:[{label:"Ingresos por Mes",data:Object.values(meses),backgroundColor:"#3b82f6"}]},options:{responsive:true,plugins:{legend:{display:false}}}})}
-async function generarPDF(){
+/* ==================== GRAFICA ==================== */
+let graficaActual = null;
+function crearGrafica() {
+    const ctx = document.getElementById("grafica");
+    if (!ctx) return;
+    if (graficaActual) graficaActual.destroy();
 
-const { jsPDF } = window.jspdf;
+    const meses = {};
+    historial.forEach(v => {
+        let mes = v.fecha.split("/")[1];
+        meses[mes] = (meses[mes] || 0) + v.total;
+    });
 
-/* tamaño ticket */
-const doc = new jsPDF({
-orientation:"p",
-unit:"mm",
-format:[80,200]
+    graficaActual = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: Object.keys(meses),
+            datasets: [{
+                label: "Ingresos por Mes",
+                data: Object.values(meses),
+                backgroundColor: "#3b82f6"
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+/* ==================== GENERAR PDF ==================== */
+async function generarPDF() {
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: [80, 200]
+    });
+
+    let y = 10;
+
+    // Logo
+    try {
+        let logo = await cargarImagenBase64("23.jpeg");
+        doc.addImage(logo, "JPEG", 25, y, 30, 20);
+        y += 25;
+    } catch (e) {
+        console.warn("No se pudo cargar el logo:", e);
+    }
+
+    // Encabezado
+    doc.setFontSize(12);
+    doc.text("YOLUVAMI", 40, y, { align: "center" });
+    y += 5;
+    doc.setFontSize(8);
+    doc.text("Factura de Venta", 40, y, { align: "center" });
+    y += 8;
+
+    let numeroFactura = "FAC-" + Date.now();
+    let v = historial[historial.length - 1];
+
+    // Datos
+    doc.setFontSize(8);
+    doc.text(`Factura: ${numeroFactura}`, 5, y);
+    y += 4;
+    doc.text(`Fecha: ${v.fecha}`, 5, y);
+    y += 4;
+    doc.text(`Hora: ${v.hora}`, 5, y);
+    y += 4;
+    doc.text(`Vendedor: ${v.vendedor || "N/A"}`, 5, y);
+    y += 6;
+
+    doc.line(5, y, 75, y);
+    y += 5;
+
+    // Productos
+    doc.text("Producto", 5, y);
+    doc.text("Cant", 40, y);
+    doc.text("Total", 60, y);
+    y += 4;
+    doc.line(5, y, 75, y);
+    y += 5;
+
+    v.productos.forEach(p => {
+        let nombre = p.name.length > 18 ? p.name.substring(0, 18) + "…" : p.name;
+        doc.text(nombre, 5, y);
+        doc.text(String(p.cantidad), 40, y);
+        doc.text(`C$${p.subtotal}`, 60, y);
+        y += 5;
+    });
+
+    doc.line(5, y, 75, y);
+    y += 6;
+
+    // Total
+    doc.setFontSize(10);
+    doc.text(`TOTAL: C$${v.total}`, 5, y);
+    y += 8;
+
+    // Mensaje final
+    doc.setFontSize(8);
+    doc.text("Gracias por su compra", 40, y, { align: "center" });
+    y += 4;
+    doc.text("YOLUVAMI", 40, y, { align: "center" });
+
+    doc.save(`Ticket_${numeroFactura}.pdf`);
+}
+
+/* ==================== CONVERTIR IMAGEN A BASE64 ==================== */
+function cargarImagenBase64(url) {
+    return new Promise((resolve, reject) => {
+        let img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function () {
+            let canvas = document.createElement("canvas");
+            canvas.width = this.width;
+            canvas.height = this.height;
+            let ctx = canvas.getContext("2d");
+            ctx.drawImage(this, 0, 0);
+            resolve(canvas.toDataURL("image/jpeg"));
+        };
+        img.onerror = reject;
+        img.src = url;
+    });
+}
+
+/* ==================== ENVIAR WHATSAPP ==================== */
+function enviarWhatsApp() {
+    let mensaje = "📊 Resumen YOLUVAMI\n\n";
+    let total = 0;
+    let vendedor = usuarioActual ? usuarioActual.user : "Desconocido";
+
+    historial.forEach(v => {
+        mensaje += `🧑 Vendedor: ${vendedor}\n`;
+        mensaje += `📅 ${v.fecha} ${v.hora}\n`;
+        v.productos.forEach(p => {
+            mensaje += `🛍 ${p.name} x${p.cantidad} - C$${p.subtotal}\n`;
+        });
+        mensaje += `💰 Total venta: C$${v.total}\n\n`;
+        total += v.total;
+    });
+
+    mensaje += `📈 TOTAL GENERAL: C$${total}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
+}
+
+/* ==================== INICIAR SISTEMA ==================== */
+window.addEventListener("load", () => {
+    const guardado = localStorage.getItem("usuarioActivo");
+    if (guardado) {
+        usuarioActual = JSON.parse(guardado);
+        const loginScreen = document.getElementById("loginScreen");
+        const usuarioTexto = document.getElementById("usuarioActivo");
+        if (loginScreen) loginScreen.style.display = "none";
+        if (usuarioTexto) usuarioTexto.innerText = usuarioActual.user;
+    }
+    cargarProductos(productos);
+    historial = JSON.parse(localStorage.getItem("ventasYoluvami")) || [];
+    mostrarHistorial();
+    mostrarAgotados();
+    cargarProductosStock();
 });
 
-let y = 10;
-
-/* logo */
-let logo = await cargarImagenBase64("23.jpeg");
-doc.addImage(logo,"JPEG",25,y,30,20);
-
-y += 25;
-
-/* encabezado */
-doc.setFontSize(12);
-doc.text("YOLUVAMI",40,y,{align:"center"});
-
-y += 5;
-doc.setFontSize(8);
-doc.text("Factura de Venta",40,y,{align:"center"});
-
-y += 8;
-
-let numeroFactura = "FAC-" + Date.now();
-
-let v = historial[historial.length-1];
-
-/* datos */
-doc.setFontSize(8);
-doc.text(`Factura: ${numeroFactura}`,5,y);
-y+=4;
-
-doc.text(`Fecha: ${v.fecha}`,5,y);
-y+=4;
-
-doc.text(`Hora: ${v.hora}`,5,y);
-y+=4;
-
-doc.text(`Vendedor: ${v.vendedor || "N/A"}`,5,y);
-
-y+=6;
-
-/* linea */
-doc.line(5,y,75,y);
-
-y+=5;
-
-/* encabezado productos */
-doc.text("Producto",5,y);
-doc.text("Cant",40,y);
-doc.text("Total",60,y);
-
-y+=4;
-
-doc.line(5,y,75,y);
-
-y+=5;
-
-/* productos */
-
-v.productos.forEach(p=>{
-
-doc.text(p.name.substring(0,18),5,y);
-doc.text(String(p.cantidad),40,y);
-doc.text(`C$${p.subtotal}`,60,y);
-
-y+=5;
-
-});
-
-/* linea */
-
-doc.line(5,y,75,y);
-
-y+=6;
-
-/* total */
-
-doc.setFontSize(10);
-doc.text(`TOTAL: C$${v.total}`,5,y);
-
-y+=8;
-
-/* mensaje */
-
-doc.setFontSize(8);
-doc.text("Gracias por su compra",40,y,{align:"center"});
-
-y+=4;
-
-doc.text("YOLUVAMI",40,y,{align:"center"});
-
-doc.save("Ticket_YOLUVAMI.pdf");
-
-}
-
-/* convertir imagen */
-
-function cargarImagenBase64(url){
-
-return new Promise((resolve,reject)=>{
-
-let img=new Image();
-img.crossOrigin="anonymous";
-
-img.onload=function(){
-
-let canvas=document.createElement("canvas");
-canvas.width=this.width;
-canvas.height=this.height;
-
-let ctx=canvas.getContext("2d");
-ctx.drawImage(this,0,0);
-
-resolve(canvas.toDataURL("image/jpeg"));
-
-};
-
-img.onerror=reject;
-
-img.src=url;
-
-});
-
-}
-function enviarWhatsApp(){
-
-let mensaje="📊 Resumen YOLUVAMI\n\n";
-
-let total=0;
-
-/* nombre del vendedor */
-let vendedor = usuarioActual ? usuarioActual.user : "Desconocido";
-
-historial.forEach(v=>{
-
-mensaje+=`🧑 Vendedor: ${vendedor}\n`;
-mensaje+=`📅 ${v.fecha} ${v.hora}\n`;
-
-v.productos.forEach(p=>{
-mensaje+=`🛍 ${p.name} x${p.cantidad} - C$${p.subtotal}\n`;
-});
-
-mensaje+=`💰 Total venta: C$${v.total}\n\n`;
-
-total+=v.total;
-
-});
-
-mensaje+=`📈 TOTAL GENERAL: C$${total}`;
-
-window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
-
-}
-
-/* INICIAR SISTEMA */
-window.addEventListener("load",()=>{
-const guardado=localStorage.getItem("usuarioActivo")
-if(guardado){usuarioActual=JSON.parse(guardado);const loginScreen=document.getElementById("loginScreen");const usuarioTexto=document.getElementById("usuarioActivo");if(loginScreen) loginScreen.style.display="none";if(usuarioTexto) usuarioTexto.innerText=usuarioActual.user}
-cargarProductos(productos)
-historial = JSON.parse(localStorage.getItem("ventasYoluvami")) || []
-mostrarHistorial()
-mostrarAgotados()
-cargarProductosStock()
-})
-function corteCaja(){
-
-if(historial.length===0){
-alert("No hay ventas registradas");
-return;
-}
-
-let vendedores = {};
-
-historial.forEach(v => {
-
-let nombre = v.vendedor || "Desconocido";
-
-if(!vendedores[nombre]){
-vendedores[nombre] = {
-ventas:0,
-total:0
-};
-}
-
-vendedores[nombre].ventas += 1;
-vendedores[nombre].total += v.total;
-
-});
-
-let mensaje = "📊 CORTE DE CAJA\n\n";
-
-let totalGeneral = 0;
-
-for(let v in vendedores){
-
-mensaje += `🧑 ${v}\n`;
-mensaje += `Ventas: ${vendedores[v].ventas}\n`;
-mensaje += `Total: C$${vendedores[v].total}\n\n`;
-
-totalGeneral += vendedores[v].total;
-
-}
-
-mensaje += `💰 TOTAL GENERAL: C$${totalGeneral}`;
-
-alert(mensaje);
-
+/* ==================== CORTE DE CAJA ==================== */
+function corteCaja() {
+    if (historial.length === 0) {
+        alert("No hay ventas registradas");
+        return;
+    }
+
+    let vendedores = {};
+
+    historial.forEach(v => {
+        let nombre = v.vendedor || "Desconocido";
+        if (!vendedores[nombre]) {
+            vendedores[nombre] = { ventas: 0, total: 0 };
+        }
+        vendedores[nombre].ventas += 1;
+        vendedores[nombre].total += v.total;
+    });
+
+    let mensaje = "📊 CORTE DE CAJA\n\n";
+    let totalGeneral = 0;
+
+    for (let v in vendedores) {
+        mensaje += `🧑 ${v}\n`;
+        mensaje += `Ventas: ${vendedores[v].ventas}\n`;
+        mensaje += `Total: C$${vendedores[v].total}\n\n`;
+        totalGeneral += vendedores[v].total;
+    }
+
+    mensaje += `💰 TOTAL GENERAL: C$${totalGeneral}`;
+    alert(mensaje);
 }
 </script>
 </body>
