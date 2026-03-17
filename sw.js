@@ -1,4 +1,4 @@
-const CACHE = "yoluvami-cache-v5";
+const CACHE = "yoluvami-cache-v6";
 
 const FILES = [
 "/",
