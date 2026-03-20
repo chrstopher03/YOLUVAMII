@@ -135,7 +135,14 @@ Usuario: <span id="usuarioActivo"></span>
 <div class="totalVentaBox">Total: C$<span id="totalVenta">0</span></div>
 <button onclick="finalizarVenta()">Finalizar Venta</button>
 </div>
+<h3>💳 Deudas</h3>
 
+<select id="tipoPago">
+<option value="contado">Contado</option>
+<option value="fiado">Fiado</option>
+</select>
+
+<div id="listaDeudas"></div>
 <!-- PANEL AGREGAR STOCK -->
 <div class="card">
 <h3>💡 Agregar Stock</h3>
@@ -452,7 +459,7 @@ function actualizarTabla(){let total=0;const tbody=document.getElementById("tabl
 
 /* ELIMINAR PRODUCTO */
 function eliminar(i){ventaActual.splice(i,1);actualizarTabla()}
-/* FINALIZAR VENTA */
+/* ==================== FINALIZAR VENTA ==================== */
 function finalizarVenta(){
 
 if(ventaActual.length===0){
@@ -463,24 +470,201 @@ return
 const fecha=new Date()
 const total=ventaActual.reduce((acc,p)=>acc+p.subtotal,0)
 
-/* guardar venta con vendedor */
-historial.push({
+const tipoPago = document.getElementById("tipoPago").value;
+
+const venta = {
 fecha:fecha.toLocaleDateString(),
 hora:fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
 vendedor: usuarioActual.user,
-productos:[...ventaActual],
-total
-})
-
-localStorage.setItem("ventasYoluvami",JSON.stringify(historial))
-
-ventaActual=[]
-
-actualizarTabla()
-mostrarHistorial()
-
+productos: JSON.parse(JSON.stringify(ventaActual)),
+total,
+tipoPago
 }
 
+// ==================== FIADO ====================
+if(tipoPago === "fiado"){
+
+    pedirDatosFiado((nombreCliente, fechaPago)=>{
+
+        deudas.push({
+            cliente: nombreCliente,
+            total: total,
+            fecha: venta.fecha,
+            fechaPago: fechaPago,
+            productos: JSON.parse(JSON.stringify(ventaActual))
+        });
+
+        localStorage.setItem("deudasYoluvami", JSON.stringify(deudas));
+
+        alerta("Venta FIADA guardada 📅","#f59e0b")
+
+        ventaActual=[]
+        actualizarTabla()
+        mostrarDeudas()
+
+    })
+
+}else{
+
+    historial.push(venta)
+
+    localStorage.setItem("ventasYoluvami",JSON.stringify(historial))
+
+    alerta("Venta realizada ✅","#16a34a")
+
+    ventaActual=[]
+    actualizarTabla()
+    mostrarHistorial()
+}
+}
+
+
+/* ==================== MODAL BONITO CON FECHA ==================== */
+function pedirDatosFiado(onConfirm){
+const modal=document.createElement("div");
+
+modal.style.cssText=`
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+`;
+
+modal.innerHTML=`
+<div style="background:white;padding:20px;border-radius:16px;width:300px;text-align:center;font-family:Poppins;">
+<h3>💳 Venta Fiada</h3>
+
+<input id="inputCliente" placeholder="Nombre del cliente"
+style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin:10px 0;">
+
+<input type="date" id="inputFecha"
+style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-bottom:10px;">
+
+<div>
+<button id="cancelarCliente" style="margin-right:5px;padding:6px 12px;border:none;border-radius:6px;background:#ccc;">Cancelar</button>
+<button id="guardarCliente" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:6px;">Guardar</button>
+</div>
+</div>
+`;
+
+document.body.appendChild(modal);
+
+document.getElementById("cancelarCliente").onclick=()=>modal.remove();
+
+document.getElementById("guardarCliente").onclick=()=>{
+let nombre=document.getElementById("inputCliente").value.trim();
+let fechaPago=document.getElementById("inputFecha").value;
+
+if(!nombre) nombre="Cliente sin nombre";
+if(!fechaPago) fechaPago="Sin fecha";
+
+onConfirm(nombre, fechaPago);
+modal.remove();
+}
+}
+function mostrarDeudas(){
+const div=document.getElementById("listaDeudas");
+if(!div)return;
+
+div.innerHTML="";
+
+if(deudas.length===0){
+div.innerHTML="<p>No hay deudas</p>";
+return;
+}
+
+const hoy = new Date();
+let alertasMostradas = false;
+
+deudas.forEach((d,index)=>{
+
+let vencida = false;
+
+if(d.fechaPago && d.fechaPago !== "Sin fecha"){
+    let fechaPago = new Date(d.fechaPago);
+
+    if(fechaPago < hoy){
+        vencida = true;
+
+        // 🔔 ALERTA SOLO UNA VEZ
+        if(!alertasMostradas){
+            alerta("⚠️ Hay deudas vencidas","#dc2626");
+            alertasMostradas = true;
+        }
+    }
+}
+
+let productosHTML = "";
+
+if(d.productos){
+    productosHTML = d.productos.map(p=>`
+    <div style="display:flex;align-items:center;margin-top:5px;">
+        <img src="${p.img}" style="width:35px;height:35px;border-radius:6px;margin-right:6px;">
+        <span>${p.name} x${p.cantidad}</span>
+    </div>
+    `).join("");
+}
+
+div.innerHTML+=`
+<div style="
+background:${vencida ? "#fee2e2" : "#fff7ed"};
+border-left:5px solid ${vencida ? "#dc2626" : "#f59e0b"};
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+">
+
+<strong>👤 ${d.cliente}</strong><br>
+💰 Deuda: C$${d.total}<br>
+📅 Venta: ${d.fecha}<br>
+⏳ Pagar antes de: 
+<strong style="color:${vencida ? "#dc2626" : "#000"}">
+${d.fechaPago}
+</strong>
+
+${productosHTML}
+
+<br>
+
+<button onclick="pagarDeuda(${index})" 
+style="margin-top:6px;padding:6px 10px;background:#ef4444;color:white;border:none;border-radius:6px;">
+Cancelado
+</button>
+
+</div>
+`
+});
+}
+/* ==================== PAGAR DEUDA ==================== */
+function pagarDeuda(index){
+mostrarConfirmacion("¿Marcar como cancelado?",()=>{
+
+    let deuda = deudas[index];
+
+    historial.push({
+        fecha: deuda.fecha,
+        hora: "Pago",
+        vendedor: usuarioActual.user,
+        productos: deuda.productos || [],
+        total: deuda.total,
+        tipoPago: "contado"
+    });
+
+    deudas.splice(index,1);
+
+    localStorage.setItem("deudasYoluvami",JSON.stringify(deudas));
+    localStorage.setItem("ventasYoluvami",JSON.stringify(historial));
+
+    mostrarDeudas();
+    mostrarHistorial();
+
+    alerta("Deuda cancelada ✅","#16a34a");
+})
+}
 /* HISTORIAL */
 function mostrarHistorial(){
 const div=document.getElementById("historial");if(!div)return;div.innerHTML="";let ingresos=0
@@ -713,6 +897,9 @@ window.addEventListener("load", () => {
     mostrarHistorial();
     mostrarAgotados();
     cargarProductosStock();
+
+    deudas = JSON.parse(localStorage.getItem("deudasYoluvami")) || [];
+mostrarDeudas();
 });
 /* ==================== CORTE DE CAJA ESTILIZADO ==================== */
 function corteCaja() {
@@ -775,6 +962,10 @@ function corteCaja() {
     document.getElementById("cerrarCorte").addEventListener("click", () => {
         modal.remove();
     });
+}
+
+window.onload = function(){
+mostrarDeudas();
 }
 </script>
 </body>
