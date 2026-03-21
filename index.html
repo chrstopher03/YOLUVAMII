@@ -211,7 +211,7 @@ cursor:pointer;
 position:fixed;
 right:18px;
 bottom:110px;
-background:var(--primary);
+background:#ffffff;
 color:#fff;
 width:60px;
 height:60px;
@@ -466,6 +466,30 @@ transition:opacity .5s ease;
   .hero{
     padding:60px 20px;
   }
+  #notificaciones {
+  position: fixed;
+  top: 20px;        /* 👈 ahora arriba */
+  right: 20px;      /* esquina derecha */
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notificacion {
+  background: #111;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  opacity: 0;
+  transform: translateY(-20px); /* 👈 animación desde arriba */
+  transition: all 0.4s ease;
+}
+
+.notificacion.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
 #notif/* Estilo para las notificaciones tipo toast */
 .notificacion {
   background: #1e3a8a;
@@ -526,6 +550,63 @@ opacity:1;
 transform:translate(-50%,0);
 }
 }
+/* CONTENEDOR */
+.buscador-container{
+  display:flex;
+  align-items:center;
+  width:100%;
+  max-width:500px;
+  margin:10px auto 20px auto;
+  background:#ffffff;
+  border-radius:14px;
+  padding:10px 14px;
+  box-shadow:0 4px 12px rgba(0, 0, 0, 0.3);
+  transition:0.3s;
+}
+
+/* 📱 MÓVIL (ESPACIO A LOS LADOS) */
+@media (max-width:600px){
+  .buscador-container{
+    width:90%; /* 👈 esto evita que toque los bordes */
+    margin:10px auto 20px auto;
+    padding:12px 16px;
+    border-radius:12px;
+  }
+
+  #buscador{
+    font-size:16px;
+  }
+}
+
+/* 💻 PC */
+@media (min-width:900px){
+  .buscador-container{
+    max-width:600px;
+    padding:12px 18px;
+  }
+}
+
+/* ICONO */
+.buscador-container .icono{
+  color:#888;
+  font-size:18px;
+  margin-right:10px;
+}
+
+/* INPUT */
+#buscador{
+  border:none;
+  outline:none;
+  background:transparent;
+  color:#000000;
+  width:100%;
+  font-size:15px;
+}
+
+/* PLACEHOLDER */
+#buscador::placeholder{
+  color:#777;
+}
 </style>
 </head>
 
@@ -559,8 +640,10 @@ Actualizar
 <input type="number" id="precioMin" placeholder="Precio mínimo">
 <input type="number" id="precioMax" placeholder="Precio máximo">
 </div>
-
-<div class="product-grid" id="productGrid"></div>
+<div class="buscador-container">
+  <span class="icono">🔍</span>
+  <input type="text" id="buscador" placeholder="Buscar producto...">
+</div><div class="product-grid" id="productGrid"></div>
 
 <div id="cartBtn" onclick="irCarrito()">🛒<div id="cartCount">0</div></div><div class="modal" id="productModal">
   <div class="modalContent">
@@ -664,29 +747,9 @@ animation:slideUp .4s ease;">
   </div>
 </div>
 
-<!-- MODAL PROMOCIÓN / IMAGEN -->
-<div class="modal" id="promoModal">
-  <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
-    
-    <!-- IMAGEN CENTRADA (AQUÍ CAMBIAS LA IMAGEN) -->
-    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:15px;">
-      <img src="70.jpeg" 
-           alt="Promoción" 
-           style="width:100%;max-width:280px;border-radius:12px;object-fit:contain;">
-    </div>
 
-    <h3 style="margin:5px 0;">Regalias para nuestros clientes</h3>
-    
-    <p style="font-size:13px;color:#555;margin-bottom:18px;line-height:1.5;">
-      Aprovecha nuestras ofertas exclusivas.
-    </p>
-
-    <button class="modalBtn" onclick="cerrarPromo()">Entendido</button>
-  
-  </div>
-</div>
 <div id="deliveryBtn" onclick="abrirDelivery()" 
-     style="position:fixed;right:18px;bottom:180px;background:#1e3a8a;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);z-index:1500;cursor:pointer;">
+     style="position:fixed;right:18px;bottom:180px;background:#ffffff;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);z-index:1500;cursor:pointer;">
   🚚
 </div>
 <!-- MODAL DELIVERY -->
@@ -986,6 +1049,14 @@ Fluido para transmisiones automáticas diseñado para lubricar, enfriar y proteg
 {name:`Tapones decorativos de aluminio`,price:200,cat:"motor",img:"194.jpeg",desc:` con acabado anodizado y detalle tipo fibra de carbono. Ideales para brindar un toque deportivo y elegante, además de proteger válvulas o componentes contra polvo y suciedad. Resistentes, duraderos y fáciles de instalar.
 
 `},
+
+
+
+
+{name:`Direccionales para motocicleta `,price:250,cat:"motor",img:"195.jpeg",desc:`Luz ámbar, diseñadas para brindar alta visibilidad y seguridad en la vía. Fabricadas con materiales resistentes y de fácil instalación, ideales para reemplazo o mejora del sistema de señalización. Incluyen cableado listo para conexión.`},
+
+
+{name:`Aceite de motor 4 tiempos 10W-40 `,price:380,cat:"motor",img:"196.jpeg",desc:`Motul 5100, formulado con tecnología Ester para una óptima lubricación y protección. Ideal para motocicletas de uso diario y off-road, mejora el rendimiento del motor, facilita cambios suaves y ofrece un arranque eficiente. Presentación de 1 litro.`},
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -1093,33 +1164,38 @@ function contactarDelivery(){
 /* ===================== */
 /* PRODUCTOS */
 /* ===================== */
-
 function mostrarProductos(){
-  let cat=categoriaFiltro.value;
-  let min=precioMin.value;
-  let max=precioMax.value;
 
-  productGrid.innerHTML="";
+  let cat = categoriaFiltro.value;
+  let min = precioMin.value;
+  let max = precioMax.value;
+  let texto = document.getElementById("buscador").value.toLowerCase();
 
-  productos.filter(p=>
-    (cat==="todos"||p.cat===cat)&&
-    (!min||p.price>=min)&&
-    (!max||p.price<=max)
-  ).forEach((p,index)=>{
-    productGrid.innerHTML+=`
+  productGrid.innerHTML = "";
+
+  productos
+  .map((p,i)=>({...p, indexReal:i})) // 👈 guardamos el índice real
+  .filter(p =>
+    (cat === "todos" || p.cat === cat) &&
+    (!min || p.price >= min) &&
+    (!max || p.price <= max) &&
+    (p.name.toLowerCase().includes(texto))
+  )
+  .forEach(p=>{
+    productGrid.innerHTML += `
     <div class="product">
-      <img src="${p.img}" data-id="${index}">
+      <img src="${p.img}" data-id="${p.indexReal}">
       <div class="product-body">
         <h4>${p.name}</h4>
         <div class="price">C$${p.price}</div>
-        <button onclick="addToCart(${index})">Agregar</button>
+        <button onclick="addToCart(${p.indexReal})">Agregar</button>
       </div>
     </div>`;
   });
 
   document.querySelectorAll(".product img").forEach(img=>{
     img.addEventListener("click",function(){
-      productoActual=productos[this.dataset.id];
+      productoActual = productos[this.dataset.id]; // 👈 ahora sí correcto
       verProducto(productoActual);
     });
   });
@@ -1237,16 +1313,20 @@ function actualizarEstado(){
 
 setInterval(actualizarEstado,60000);
 actualizarEstado();
-
 /* ===================== */
 /* FILTROS */
 /* ===================== */
 
-categoriaFiltro.addEventListener("change",mostrarProductos);
-precioMin.addEventListener("input",mostrarProductos);
-precioMax.addEventListener("input",mostrarProductos);
+const buscador = document.getElementById("buscador");
 
-mostrarProductos();/* ===================== */
+categoriaFiltro.addEventListener("change", mostrarProductos);
+precioMin.addEventListener("input", mostrarProductos);
+precioMax.addEventListener("input", mostrarProductos);
+buscador.addEventListener("input", mostrarProductos);
+
+mostrarProductos();
+
+/* ===================== */
 /* INSTALAR APP (PWA) */
 /* ===================== */
 
