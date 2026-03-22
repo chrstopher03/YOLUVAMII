@@ -656,6 +656,51 @@ transform:translate(-50%,0);
   color: white;
   box-shadow: 0 4px 15px rgba(220,38,38,0.4);
 }
+#statusElement{
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+
+  padding: 6px 10px; /* 👈 más pequeño */
+  border-radius: 10px;
+
+  font-size: 12px; /* 👈 texto más chico */
+  font-weight: 500;
+
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+  opacity: 0.9; /* 👈 un poco transparente */
+  transition: all 0.3s ease;
+}
+
+/* 🟢 ABIERTO */
+.status.abierto{
+  background: #16a34a;
+}
+
+/* 🔴 CERRADO */
+.status.cerrado{
+  background: #dc2626;
+}
+
+/* 👇 efecto al pasar el mouse */
+#statusElement:hover{
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+@keyframes aparecer{
+  from{
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to{
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 /* 📱 MÓVIL (ESPACIO A LOS LADOS) */
 @media (max-width:600px){
   .buscador-container{
@@ -699,15 +744,103 @@ transform:translate(-50%,0);
 #buscador::placeholder{
   color:#777;
 }
+/* CONTENEDOR GENERAL */
+#ubicacionModal .modalContent{
+  max-width:420px;
+  padding:28px 22px;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+}
+
+/* IMAGEN DE FONDO SOLO AQUÍ */
+.ubicacionBg{
+  background-image: url('200.jpeg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: #000;
+}
+
+/* CAPA OSCURA */
+.ubicacionBg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* CONTENIDO ENCIMA */
+.ubicacionBg > *{
+  position:relative;
+  z-index:1;
+  color:#000000;
+}
+
+/* TÍTULO */
+#ubicacionModal h2{
+  margin:0 0 8px;
+  font-size:20px;
+  font-weight:700;
+  text-align:center;
+}
+
+/* TEXTO */
+#ubicacionModal p{
+  font-size:13px;
+  color:#000000;
+  margin-bottom:22px;
+  text-align:center;
+  line-height:1.5;
+}
+
+/* CAMPOS */
+.campo{
+  margin-bottom:16px;
+}
+
+.campo label{
+  font-size:12px;
+  font-weight:600;
+  display:block;
+  margin-bottom:5px;
+  color:#000000;
+}
+
+.campo select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  font-size:14px;
+  outline:none;
+}
+
+/* BOTÓN */
+.btnUbicacion{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  background:#000000;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.btnUbicacion:hover{
+  background:#16a34a;
+}
 </style>
 </head>
 
 <body>
 
-<header>
-<div id="status" class="status"></div>
-</header>
-
+<div id="statusElement" class="status"></div>
 <div class="hero">
 <img src="23.jpeg">
 <h2>YOLUVAMI</h2>
@@ -840,6 +973,33 @@ animation:slideUp .4s ease;">
 </div>
 
 
+<!-- MODAL INSTAGRAM -->
+<div class="modal" id="instagramModal">
+  <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
+    
+    <!-- IMAGEN CENTRADA -->
+    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:15px;">
+      <img src="instagram.png" 
+           alt="Instagram" 
+           style="width:90px;height:90px;object-fit:contain;">
+    </div>
+
+    <h3 style="margin:5px 0;">Síguenos en Instagram</h3>
+    
+    <p style="font-size:12px;color:#555;margin-bottom:18px;line-height:1.5;">
+      Síguenos para ver novedades, promociones y contenido exclusivo de nuestros productos.
+    </p>
+
+    <button class="modalBtn" onclick="seguirInstagram()">Seguir ahora</button>
+    
+    <button class="modalBtn" 
+            style="background:#e5e7eb;color:#111;margin-top:8px;"
+            onclick="cerrarInstagram()">
+      Quizás más tarde
+    </button>
+  
+  </div>
+</div>
 <div id="deliveryBtn" onclick="abrirDelivery()" 
      style="position:fixed;right:18px;bottom:180px;background:#ffffff;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);z-index:1500;cursor:pointer;">
   🚚
@@ -862,8 +1022,55 @@ animation:slideUp .4s ease;">
       <button class="modalBtn" style="background:#e5e7eb;color:#111;margin-top:8px;" onclick="cerrarDelivery()">Cerrar</button>
     </div>
   </div>
-</div>
+</div><!-- MODAL UBICACIÓN PRO -->
+<div class="modal" id="ubicacionModal">
+  <div class="modalContent ubicacionBg">
 
+    <h2>
+      Bienvenido a YOLUVAMI 
+    </h2>
+
+    <p>
+      Selecciona tu país, idioma y moneda para brindarte una experiencia de compra personalizada y más rápida.
+    </p>
+
+    <!-- PAÍS -->
+    <div class="campo">
+      <label>País</label>
+      <select id="paisSelect">
+        <option value="ni">🇳🇮 Nicaragua</option>
+        <option value="cr">🇨🇷 Costa Rica</option>
+        <option value="hn">🇭🇳 Honduras</option>
+        <option value="sv">🇸🇻 El Salvador</option>
+        <option value="gt">🇬🇹 Guatemala</option>
+      </select>
+    </div>
+
+    <!-- IDIOMA -->
+    <div class="campo">
+      <label>Idioma</label>
+      <select id="idiomaSelect">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <!-- MONEDA -->
+    <div class="campo">
+      <label>Moneda</label>
+      <select id="monedaSelect">
+        <option value="nio">Córdoba (C$)</option>
+        <option value="usd">Dólar ($)</option>
+      </select>
+    </div>
+
+    <!-- BOTÓN -->
+    <button class="btnUbicacion" onclick="guardarUbicacion()">
+       Comprar ahora
+    </button>
+
+  </div>
+</div>
 <!-- BARRA INFERIOR -->
 
 <nav class="bottomNav">
@@ -890,6 +1097,8 @@ animation:slideUp .4s ease;">
 </nav>
 
 <script>const productos = [
+  
+
 {name:"Mobil Special 20W-50 - Aceite para motor",price:1060,cat:"motor",img:"30.jpeg",desc:"Mobil Special 20W-50 es un aceite mineral de alta calidad diseñado para brindar protección confiable al motor en condiciones de trabajo exigentes. Su fórmula ayuda a reducir el desgaste y mantener el motor limpio, prolongando su vida útil."},
 {name:"CLEAN ALL",price:180,cat:"motor",img:"39.jpeg",desc:`Es un limpiador espumoso multiusos diseñado especialmente para la limpieza interior y exterior de vehículos. 
 Su poderosa fórmula en espuma penetra profundamente en la suciedad, ayudando a remover manchas difíciles, polvo y grasa sin dañar las superficies.
@@ -1168,8 +1377,7 @@ const modalDesc = document.getElementById("modalDesc");
 const modalPrice = document.getElementById("modalPrice");
 const modalImg = document.getElementById("modalImg");
 
-const statusElement = document.getElementById("status");
-
+const statusElement = document.getElementById("statusElement");
 /* ===================== */
 /* CARRITO */
 /* ===================== */
@@ -1322,16 +1530,52 @@ function cerrarBienvenida(){
 
 function cerrarTiktok(){
   document.getElementById("tiktokModal").style.display = "none";
-  setTimeout(()=>{document.getElementById("promoModal").style.display = "flex";},400);
+  setTimeout(()=>{
+    document.getElementById("instagramModal").style.display = "flex";
+  },400);
 }
-
 function cerrarPromo(){
   document.getElementById("promoModal").style.display = "none";
 }
 
 function seguirAhora(){
   window.open("https://www.tiktok.com/@yoluvami_autopart?_r=1&_t=ZS-94EaAHGjUhk", "_blank");
-}/* ===================== */
+}
+
+function seguirInstagram(){
+  window.open("https://www.instagram.com/yoluvami_autoparts?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==", "_blank");
+}
+function cerrarInstagram(){
+  document.getElementById("instagramModal").style.display = "none";
+}
+
+// Mostrar al iniciar (solo una vez)
+window.addEventListener("load", () => {
+  if(!localStorage.getItem("ubicacionGuardada")){
+    setTimeout(()=>{
+      document.getElementById("ubicacionModal").style.display = "flex";
+    },500);
+  }
+});
+
+// Guardar datos
+function guardarUbicacion(){
+
+  const pais = document.getElementById("paisSelect").value;
+  const idioma = document.getElementById("idiomaSelect").value;
+  const moneda = document.getElementById("monedaSelect").value;
+
+  localStorage.setItem("pais", pais);
+  localStorage.setItem("idioma", idioma);
+  localStorage.setItem("moneda", moneda);
+  localStorage.setItem("ubicacionGuardada", "true");
+
+  document.getElementById("ubicacionModal").style.display = "none";
+
+  // Notificación opcional
+  notificar("Configuración guardada ✔️","success");
+}
+/* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
 
@@ -1567,88 +1811,26 @@ icon:"23.jpeg"
 
 }
 
-}// ================== CONFIG ==================
+}// Cola de notificaciones
 let colaNotificaciones = [];
 let mostrando = false;
-let audioActivo = false;
 
-// Estado de sonido (guardado)
-let sonidoHabilitado = localStorage.getItem("sonidoNotif") !== "off";
-
-// ================== AUDIO FIX MÓVIL ==================
-let sonidos = {};
-
-function activarAudio() {
-  if (audioActivo) return;
-
-  // Crear sonidos DESPUÉS del toque (clave en móvil)
-  sonidos = {
-    success: new Audio("https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8630b1c68.mp3"),
-    error: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c1d9d3c1f.mp3"),
-    carrito: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3"),
-    info: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3")
-  };
-
-  Object.values(sonidos).forEach(s => {
-    s.volume = 0.9;
-
-    // Truco para desbloquear audio
-    s.play().then(() => {
-      s.pause();
-      s.currentTime = 0;
-    }).catch(()=>{});
-  });
-
-  audioActivo = true;
-  console.log("🔊 Audio ACTIVADO");
-}
-
-// 🔥 IMPORTANTE (sin once)
-document.addEventListener("click", activarAudio);
-document.addEventListener("touchstart", activarAudio);
-
-// ================== BOTÓN SILENCIO ==================
-function crearBotonSonido() {
-  const btn = document.createElement("button");
-  btn.id = "btnSonido";
-  btn.innerText = sonidoHabilitado ? "🔊" : "🔕";
-
-  btn.style.position = "fixed";
-  btn.style.bottom = "20px";
-  btn.style.right = "20px";
-  btn.style.zIndex = "99999";
-  btn.style.padding = "10px";
-  btn.style.borderRadius = "50%";
-  btn.style.border = "none";
-  btn.style.background = "#111";
-  btn.style.color = "#fff";
-  btn.style.fontSize = "18px";
-  btn.style.cursor = "pointer";
-
-  btn.onclick = () => {
-    sonidoHabilitado = !sonidoHabilitado;
-    localStorage.setItem("sonidoNotif", sonidoHabilitado ? "on" : "off");
-    btn.innerText = sonidoHabilitado ? "🔊" : "🔕";
-  };
-
-  document.body.appendChild(btn);
-}
-
-// ================== INICIO ==================
+// Espera DOM
 document.addEventListener("DOMContentLoaded", () => {
-  crearBotonSonido();
-
   notificar("Nuevos productos disponibles", "info");
-  notificar("La app sigue en mantenimiento", "error");
+notificar("La app sigue en mantenimiento", "error");
 });
 
-// ================== FUNCIÓN PRINCIPAL ==================
+// Sonido
+const sonidoNotif = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3?filename=notification-110888.mp3");
+
+// Función principal
 function notificar(texto, tipo = "info"){
   colaNotificaciones.push({ texto, tipo });
   procesarCola();
 }
 
-// ================== COLA ==================
+// Procesa una por una
 function procesarCola(){
   if (mostrando || colaNotificaciones.length === 0) return;
 
@@ -1657,11 +1839,11 @@ function procesarCola(){
   const { texto, tipo } = colaNotificaciones.shift();
   mostrarNotificacion(texto, tipo, () => {
     mostrando = false;
-    procesarCola();
+    procesarCola(); // siguiente
   });
 }
 
-// ================== MOSTRAR ==================
+// Mostrar notificación
 function mostrarNotificacion(texto, tipo, callback) {
   const contenedor = document.getElementById("notificaciones");
   if (!contenedor) return;
@@ -1686,24 +1868,19 @@ function mostrarNotificacion(texto, tipo, callback) {
   div.offsetHeight;
   div.classList.add("mostrar");
 
-  // 📳 Vibración
+  // Vibración
   if (navigator.vibrate) navigator.vibrate(80);
 
-  // 🔊 SONIDO REAL
-  if (audioActivo && sonidoHabilitado && sonidos[tipo]) {
-    try {
-      const sonido = sonidos[tipo];
-      sonido.currentTime = 0;
-      sonido.play().catch(()=>{});
-    } catch(e){}
-  }
+  // Sonido
+  sonidoNotif.currentTime = 0;
+  sonidoNotif.play().catch(()=>{});
 
-  // ⏳ Duración
+  // Duración
   setTimeout(() => {
     div.classList.remove("mostrar");
     setTimeout(() => {
       div.remove();
-      callback();
+      callback(); // 👉 muestra la siguiente
     }, 400);
   }, 3500);
 }

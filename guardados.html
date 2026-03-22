@@ -766,7 +766,33 @@ animation:slideUp .4s ease;">
   </div>
 </div>
 
+<!-- MODAL INSTAGRAM -->
+<div class="modal" id="instagramModal">
+  <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
+    
+    <!-- IMAGEN CENTRADA -->
+    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:15px;">
+      <img src="instagram.png" 
+           alt="Instagram" 
+           style="width:90px;height:90px;object-fit:contain;">
+    </div>
 
+    <h3 style="margin:5px 0;">Síguenos en Instagram</h3>
+    
+    <p style="font-size:12px;color:#555;margin-bottom:18px;line-height:1.5;">
+      Síguenos para ver novedades, promociones y contenido exclusivo de nuestros productos.
+    </p>
+
+    <button class="modalBtn" onclick="seguirInstagram()">Seguir ahora</button>
+    
+    <button class="modalBtn" 
+            style="background:#e5e7eb;color:#111;margin-top:8px;"
+            onclick="cerrarInstagram()">
+      Quizás más tarde
+    </button>
+  
+  </div>
+</div>
 <div id="deliveryBtn" onclick="abrirDelivery()" 
      style="position:fixed;right:18px;bottom:180px;background:#ffffff;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);z-index:1500;cursor:pointer;">
   🚚
@@ -1258,6 +1284,13 @@ function cerrarPromo(){
 
 function seguirAhora(){
   window.open("https://www.tiktok.com/@yoluvami_autopart?_r=1&_t=ZS-94EaAHGjUhk", "_blank");
+}
+function seguirInstagram(){
+  window.open("https://instagram.com/TU_USUARIO", "_blank");
+}
+
+function cerrarInstagram(){
+  document.getElementById("instagramModal").style.display = "none";
 }/* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
@@ -1549,6 +1582,8 @@ function notificar(texto){
   mostrarNotificacion(texto); // ✅ siempre funciona
   notificacionSistema(texto); // ⚠️ opcional
 }
+
+
 
 </script>
 
