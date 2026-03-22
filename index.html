@@ -99,7 +99,7 @@ background:#fee2e2;
 .hero{
 text-align:center;
 padding:30px 20px;
-background:linear-gradient(180deg,#1e3a8a,#14285f);
+background:linear-gradient(180deg, #b7bccd, #000000);
 color:#fff;
 border-radius:0 0 30px 30px;
 }
@@ -122,7 +122,7 @@ padding:9px 18px;
 border:none;
 border-radius:25px;
 background:#fff;
-color:var(--primary);
+color:#000000;
 font-weight:600;
 font-size:13px;
 cursor:pointer;
@@ -191,7 +191,7 @@ font-weight:500;
 .price{
 font-size:14px;
 font-weight:600;
-color:var(--primary);
+color:#dc2626;
 margin:6px 0;
 }
 
@@ -200,7 +200,7 @@ margin-top:auto;
 padding:9px;
 border:none;
 border-radius:10px;
-background:var(--primary);
+background:#000000;
 color:#fff;
 font-size:13px;
 cursor:pointer;
@@ -296,7 +296,7 @@ margin-top:12px;
 padding:12px;
 border:none;
 border-radius:12px;
-background:var(--primary);
+background:#000000;
 color:#fff;
 width:100%;
 font-weight:600;
@@ -306,9 +306,9 @@ cursor:pointer;
 display:none;
 margin:15px auto;
 padding:12px 24px;
-background:#2563eb;
+background:#adaeb2;
 color:white;
-border:2px solid #1e40af;
+border:2px solid #141414;
 border-radius:25px;
 font-size:16px;
 font-weight:bold;
@@ -338,7 +338,7 @@ transform:scale(0.96);
 }
 /* INFO MODAL */
 .infoHeader{
-background:linear-gradient(180deg,#1e3a8a,#14285f);
+background:linear-gradient(180deg,#000000,#000000);
 color:#fff;
 padding:20px;
 text-align:center;
@@ -372,7 +372,7 @@ line-height:1.5;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #1e3a8a;
+  background: #000000;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -465,47 +465,43 @@ transition:opacity .5s ease;
 
   .hero{
     padding:60px 20px;
-  }
-  #notificaciones {
+  }#notificaciones {
   position: fixed;
-  top: 20px;        /* 👈 ahora arriba */
-  right: 20px;      /* esquina derecha */
-  z-index: 9999;
+  top: calc(env(safe-area-inset-top, 0px) + 10px); /* 👈 clave en móvil */
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
+
+  pointer-events: none;
 }
 
 .notificacion {
-  background: #111;
+  background: rgba(20, 20, 20, 0.95);
   color: #fff;
-  padding: 12px 18px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+
+  width: 90%;
+  max-width: 350px;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+
   opacity: 0;
-  transform: translateY(-20px); /* 👈 animación desde arriba */
+  transform: translateY(-40px); /* 👈 entra desde arriba real */
   transition: all 0.4s ease;
+
+  pointer-events: auto;
 }
 
 .notificacion.mostrar {
   opacity: 1;
   transform: translateY(0);
 }
-#notif/* Estilo para las notificaciones tipo toast */
-.notificacion {
-  background: #1e3a8a;
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 8px;
-  margin-top: 8px;
-  font-size: 14px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  max-width: 250px;
-  word-wrap: break-word;
-  opacity: 0;
-  transform: translateX(100%);
-  transition: all 0.5s ease;
-}
-
 /* Animación de entrada */
 .notificacion.mostrar {
   opacity: 1;
@@ -1476,24 +1472,19 @@ icon:"23.jpeg"
 }
 
 }
+// Espera a que el DOM esté listo (mejor que "load" en móvil)
+document.addEventListener("DOMContentLoaded", () => {
+  notificar("🔔 Nuevos productos disponibles");
+});
 
-activarNotificaciones();
-window.addEventListener("load", ()=>{
-
-setTimeout(()=>{
-const splash = document.getElementById("splash");
-splash.style.opacity="0";
-
-setTimeout(()=>{
-splash.style.display="none";
-},500);
-
-},1500);
-
-});// Función para mostrar notificación tipo toast
+// Función para mostrar notificación tipo toast
 function mostrarNotificacion(texto) {
   const contenedor = document.getElementById("notificaciones");
-  if(!contenedor) return;
+  
+  if (!contenedor) {
+    console.warn("No existe #notificaciones");
+    return;
+  }
 
   const div = document.createElement("div");
   div.className = "notificacion";
@@ -1501,39 +1492,40 @@ function mostrarNotificacion(texto) {
 
   contenedor.appendChild(div);
 
-  // Trigger animación
-  setTimeout(() => div.classList.add("mostrar"), 10);
+  // Forzar reflow (mejora animación en móvil)
+  div.offsetHeight;
 
-  // Desaparece después de 5 segundos
+  // Mostrar animación
+  div.classList.add("mostrar");
+
+  // Vibración en móvil (si el dispositivo lo permite)
+  if (navigator.vibrate) {
+    navigator.vibrate(100);
+  }
+
+  // Desaparece después de 4 segundos
   setTimeout(() => {
     div.classList.remove("mostrar");
-    setTimeout(() => div.remove(), 500);
-  }, 5000);
+    setTimeout(() => div.remove(), 400);
+  }, 4000);
 }
 
-// Función para notificación del sistema
+// Función para notificación del sistema (más segura)
 function notificacionSistema(texto) {
-  if ("Notification" in window) {
-    if (Notification.permission === "granted") {
-      new Notification(texto);
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then(permission => {
-        if(permission === "granted") new Notification(texto);
-      });
-    }
+  // En muchos móviles no funciona → evitamos errores
+  if (!("Notification" in window)) return;
+
+  // Solo si ya está permitido
+  if (Notification.permission === "granted") {
+    new Notification(texto);
   }
 }
 
-// Función que combina ambas notificaciones
+// Función principal
 function notificar(texto){
-  mostrarNotificacion(texto); // Toast en la web
-  notificacionSistema(texto); // Notificación del sistema si es posible
+  mostrarNotificacion(texto); // ✅ siempre funciona
+  notificacionSistema(texto); // ⚠️ opcional
 }
-
-// Ejemplo: notificación al cargar la página
-window.addEventListener("load", () => {
-  notificar("🔔 Nuevos productos disponibles");
-});
 </script>
 
 </body>

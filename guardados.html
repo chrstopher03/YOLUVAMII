@@ -19,3 +19,1538 @@
   
   </div>
 </div>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta name="google-site-verification" content="Q6j0L4Nrrj9lhvX7Y6lvAgKhfbK40OGtBPB2vgIuYTM" />
+<meta charset="UTF-8">
+<title>YOLUVAMI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOLUVAMI | App para comprar fácil y rápido en Nicaragua</title>
+
+<meta name="description" content="Descarga YOLUVAMI y compra productos fácil y rápido desde tu celular. Agrega al carrito y recibe sin salir de casa en Nicaragua.">
+
+<meta name="keywords" content="YOLUVAMI, comprar online Nicaragua, app de compras, tienda online Nicaragua">
+
+<meta name="author" content="YOLUVAMI">
+
+<meta name="robots" content="index, follow">
+
+<!-- ICONO (Google) -->
+<link rel="icon" href="/favicon.png">
+
+<!-- OPEN GRAPH (WhatsApp, Facebook) -->
+<meta property="og:title" content="YOLUVAMI | Compra fácil desde tu celular">
+<meta property="og:description" content="Compra productos fácil y rápido con YOLUVAMI">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yoluvamii.netlify.app">
+<meta property="og:image" content="https://yoluvamii.netlify.app/23.jpeg">
+
+<!-- TWITTER -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="YOLUVAMI">
+<meta name="twitter:description" content="Compra fácil desde tu celular con YOLUVAMI">
+<meta name="twitter:image" content="https://yoluvamii.netlify.app/23.jpeg">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a8a">
+  <meta name="google-site-verification" content="kX3gM3cCv17HpEX0Ai2qrCj7va5LyFhSKeof_yoDd88" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+--primary:#1e3a8a;
+--bg:#f5f6fa;
+--text:#222;
+}
+
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:var(--bg);
+color:var(--text);
+padding-bottom:120px;
+}
+
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 16px;
+background:#fff;
+box-shadow:0 2px 10px rgba(0,0,0,.05);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+header h3{
+margin:0;
+font-size:15px;
+font-weight:600;
+}
+
+.status{
+font-size:13px;
+font-weight:600;
+padding:6px 12px;
+border-radius:20px;
+transition:.3s;
+}
+
+.abierto{
+color:#065f46;
+background:#d1fae5;
+}
+
+.cerrado{
+color:#7f1d1d;
+background:#fee2e2;
+}
+
+/* HERO */
+.hero{
+text-align:center;
+padding:30px 20px;
+background:linear-gradient(180deg,#1e3a8a,#14285f);
+color:#fff;
+border-radius:0 0 30px 30px;
+}
+
+.hero img{
+width:110px;
+height:110px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #fff;
+margin-bottom:12px;
+}
+
+.hero h2{margin:6px 0 4px;font-size:18px;}
+.hero p{font-size:12px;margin:3px 0;opacity:.9;}
+
+.infoBtn{
+margin-top:12px;
+padding:9px 18px;
+border:none;
+border-radius:25px;
+background:#fff;
+color:var(--primary);
+font-weight:600;
+font-size:13px;
+cursor:pointer;
+}
+
+/* FILTROS */
+.filtros{
+padding:15px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.filtros select,
+.filtros input{
+padding:10px;
+border-radius:12px;
+border:1px solid #ddd;
+font-size:14px;
+background:#fff;
+}
+
+/* PRODUCTOS */
+.product-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+padding:15px;
+}
+
+.product{
+background:#fff;
+border-radius:16px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+overflow:hidden;
+display:flex;
+flex-direction:column;
+transition:.3s;
+}
+
+.product:hover{
+transform:translateY(-3px);
+}
+
+.product img{
+width:100%;
+aspect-ratio:1/1;
+object-fit:contain;
+background:#ffffff;
+cursor:pointer;
+}
+
+.product-body{
+padding:10px;
+display:flex;
+flex-direction:column;
+flex:1;
+}
+
+.product h4{
+font-size:13px;
+margin:0;
+font-weight:500;
+}
+
+.price{
+font-size:14px;
+font-weight:600;
+color:var(--primary);
+margin:6px 0;
+}
+
+.product button{
+margin-top:auto;
+padding:9px;
+border:none;
+border-radius:10px;
+background:var(--primary);
+color:#fff;
+font-size:13px;
+cursor:pointer;
+}
+
+/* CARRITO */
+#cartBtn{
+position:fixed;
+right:18px;
+bottom:110px;
+background:#ffffff;
+color:#fff;
+width:60px;
+height:60px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+box-shadow:0 10px 25px rgba(0,0,0,.3);
+z-index:1500;
+cursor:pointer;
+}
+
+#cartCount{
+position:absolute;
+top:-4px;
+right:-4px;
+background:#dc2626;
+width:20px;
+height:20px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+}
+
+/* MODALES */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+display:none;
+justify-content:center;
+align-items:center;
+padding:20px;
+z-index:3000;
+}
+.modalContent{
+  background:#fff;
+  width:100%;
+  max-width:700px;
+  max-height:90vh;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  overflow: hidden; /* el scroll ahora será del body */
+}
+
+.modalBody{
+  padding:18px;
+  overflow-y: auto; /* el scroll incluye la imagen */
+  flex:1;
+}
+
+.modalBody img{
+  width:100%;
+  height:auto;
+  margin-bottom:12px;
+  object-fit:contain;
+}
+@keyframes scaleIn{
+from{transform:scale(.9);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+.modalContent img{
+width:100%;
+max-height:300px;
+object-fit:contain;
+background:#ffffff;
+}
+
+.modalBody{
+padding:18px;
+overflow-y:auto;
+flex:1;
+}
+
+.modalBtn{
+margin-top:12px;
+padding:12px;
+border:none;
+border-radius:12px;
+background:var(--primary);
+color:#fff;
+width:100%;
+font-weight:600;
+cursor:pointer;
+}
+.installBtn{
+display:none;
+margin:15px auto;
+padding:12px 24px;
+background:#2563eb;
+color:white;
+border:2px solid #1e40af;
+border-radius:25px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 5px 12px rgba(0,0,0,0.25);
+transition:all .25s ease;
+}
+
+/* centrar el botón */
+.installBtn{
+display:none;
+margin-left:auto;
+margin-right:auto;
+display:block;
+}
+
+/* efecto al pasar el dedo o mouse */
+.installBtn:hover{
+background:#1e40af;
+transform:translateY(-2px);
+box-shadow:0 8px 16px rgba(0,0,0,0.3);
+}
+
+/* efecto al presionar */
+.installBtn:active{
+transform:scale(0.96);
+}
+/* INFO MODAL */
+.infoHeader{
+background:linear-gradient(180deg,#1e3a8a,#14285f);
+color:#fff;
+padding:20px;
+text-align:center;
+}
+
+.infoHeader h3{margin:0;font-size:18px;}
+.infoHeader p{margin:5px 0 0;font-size:13px;opacity:.9;}
+
+.infoItem{
+margin-bottom:15px;
+display:flex;
+flex-direction:column;
+font-size:14px;
+}
+
+.infoItem strong{
+color:#1e3a8a;
+margin-bottom:3px;
+}
+
+.infoDescripcion{
+background:#f3f4f6;
+padding:15px;
+border-radius:12px;
+font-size:13px;
+margin-top:10px;
+line-height:1.5;
+}
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #1e3a8a;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.bottomNav .navItem {
+  text-decoration: none;
+  color: #cbd5e1;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  transition: 0.3s;
+}
+.bottomNav .navItem.active,
+.bottomNav .navItem:hover {
+  color: #fff;
+}
+.bottomNav .navItem .icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom: 2px;
+}
+
+.icon{
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom:4px;
+}
+#splash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#1e3a8a;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:white;
+font-family:sans-serif;
+}
+
+#splash img{
+width:120px;
+height:120px;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+#splash h1{
+font-size:26px;
+letter-spacing:2px;
+}
+#splash{
+transition:opacity .5s ease;
+}
+/* RESPONSIVE ESCRITORIO */
+@media(min-width:768px){
+  .product-grid{
+    grid-template-columns: repeat(3,1fr);
+    padding:25px;
+    gap:20px;
+  }
+
+  .hero{
+    padding:40px 20px;
+  }
+
+  .modalContent{
+    max-width:600px;
+  }
+}
+
+@media(min-width:1200px){
+  .product-grid{
+    grid-template-columns: repeat(4,1fr);
+    padding:40px;
+    gap:25px;
+  }
+
+  .hero{
+    padding:60px 20px;
+  }#notificaciones {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 10px); /* 👈 clave en móvil */
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  pointer-events: none;
+}
+
+.notificacion {
+  background: rgba(20, 20, 20, 0.95);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 14px;
+
+  width: 90%;
+  max-width: 350px;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+
+  opacity: 0;
+  transform: translateY(-40px); /* 👈 entra desde arriba real */
+  transition: all 0.4s ease;
+
+  pointer-events: auto;
+}
+
+.notificacion.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Animación de entrada */
+.notificacion.mostrar {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Fondo blanco al cargar la app */
+html, body {
+  background-color: #ffffff;
+}
+.notificacion{
+background:#1e3a8a;
+color:white;
+padding:12px 15px;
+margin-bottom:10px;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.3);
+font-size:14px;
+animation:slideDown .4s ease;
+}
+
+@keyframes slideDown{
+from{
+opacity:0;
+transform:translateY(-20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+  .modalContent{
+    max-width:700px;
+  }
+}
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translate(-50%,40px);
+}
+to{
+opacity:1;
+transform:translate(-50%,0);
+}
+}
+/* CONTENEDOR */
+.buscador-container{
+  display:flex;
+  align-items:center;
+  width:100%;
+  max-width:500px;
+  margin:10px auto 20px auto;
+  background:#ffffff;
+  border-radius:14px;
+  padding:10px 14px;
+  box-shadow:0 4px 12px rgba(0, 0, 0, 0.3);
+  transition:0.3s;
+}
+
+/* 📱 MÓVIL (ESPACIO A LOS LADOS) */
+@media (max-width:600px){
+  .buscador-container{
+    width:90%; /* 👈 esto evita que toque los bordes */
+    margin:10px auto 20px auto;
+    padding:12px 16px;
+    border-radius:12px;
+  }
+
+  #buscador{
+    font-size:16px;
+  }
+}
+
+/* 💻 PC */
+@media (min-width:900px){
+  .buscador-container{
+    max-width:600px;
+    padding:12px 18px;
+  }
+}
+
+/* ICONO */
+.buscador-container .icono{
+  color:#888;
+  font-size:18px;
+  margin-right:10px;
+}
+
+/* INPUT */
+#buscador{
+  border:none;
+  outline:none;
+  background:transparent;
+  color:#000000;
+  width:100%;
+  font-size:15px;
+}
+
+/* PLACEHOLDER */
+#buscador::placeholder{
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div id="status" class="status"></div>
+</header>
+
+<div class="hero">
+<img src="23.jpeg">
+<h2>YOLUVAMI</h2>
+<p>Somoto · Madriz · Nicaragua 🇳🇮</p>
+<p>Lubricantes · Grasas · Aceites</p>
+<button class="infoBtn" onclick="openInfo()">Ver Información</button>
+<button id="installBtn" class="installBtn">📲 Instalar App</button></div>
+<div id="updateBox" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e40af;color:white;padding:12px 20px;border-radius:20px;box-shadow:0 6px 15px rgba(0,0,0,0.3);font-size:14px;">
+Nueva actualización disponible
+<button onclick="updateApp()" style="margin-left:10px;background:white;color:#1e40af;border:none;padding:6px 10px;border-radius:10px;cursor:pointer;">
+Actualizar
+</button>
+</div>
+<div class="filtros">
+<select id="categoriaFiltro">
+<option value="todos">Todas</option>
+<option value="motor">Motor</option>
+<option value="industrial">Industrial</option>
+<option value="grasas">Grasas</option>
+</select>
+
+<input type="number" id="precioMin" placeholder="Precio mínimo">
+<input type="number" id="precioMax" placeholder="Precio máximo">
+</div>
+<div class="buscador-container">
+  <span class="icono">🔍</span>
+  <input type="text" id="buscador" placeholder="Buscar producto...">
+</div><div class="product-grid" id="productGrid"></div>
+
+<div id="cartBtn" onclick="irCarrito()">🛒<div id="cartCount">0</div></div><div class="modal" id="productModal">
+  <div class="modalContent">
+    <div class="modalBody">
+      <img id="modalImg">
+      <h3 id="modalTitle"></h3>
+      <div id="modalPrice" class="price"></div>
+      <p id="modalDesc"></p>
+      <button class="modalBtn" onclick="agregarDesdeModal()">Agregar al carrito</button>
+      <button class="modalBtn" onclick="closeProduct()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INFO -->
+<div class="modal" id="infoModal">
+<div class="modalContent">
+<div class="infoHeader">
+<h3>YOLUVAMI</h3>
+<p>Información del Negocio</p>
+</div>
+<div class="modalBody">
+<div class="infoItem">
+<strong>👤 Propietaria:</strong>
+<span>Yomara</span>
+</div>
+<div class="infoItem">
+<strong>📍 Ubicación:</strong>
+<span>Somoto, Madriz, Nicaragua 🇳🇮</span>
+</div>
+<div class="infoItem">
+<strong>🕒 Horario:</strong>
+<span>8:30 AM - 4:00 PM</span>
+</div>
+<div class="infoDescripcion">
+Especialistas en lubricantes y aceites para motor e industria.
+Productos confiables y de alta calidad.
+</div>
+<button class="modalBtn" onclick="closeInfo()">Cerrar</button>
+</div>
+</div>
+</div>
+<!-- MODAL BIENVENIDA -->
+<div class="modal" id="bienvenidaModal">
+  <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
+    
+    <h2 style="margin-top:0;">👋 Bienvenidos</h2>
+    
+    <p style="font-size:14px;line-height:1.6;">
+      Bienvenidos a <strong>YOLUVAMI</strong>, un sitio donde te ofrecemos 
+      lubricantes y mucho más para tu vehículo.
+    </p>
+
+    <button class="modalBtn" onclick="cerrarBienvenida()">Continuar</button>
+  
+  </div>
+</div>
+<div id="notificaciones"></div>
+<div id="updateToast" style="
+display:none;
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#111827;
+color:white;
+padding:12px 18px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.4);
+font-size:14px;
+z-index:9999;
+animation:slideUp .4s ease;">
+🚀 Actualización instalada
+</div>
+
+<!-- MODAL TIKTOK -->
+<div class="modal" id="tiktokModal">
+  <div class="modalContent" style="max-width:400px;text-align:center;padding:25px;">
+    
+    <!-- IMAGEN CENTRADA -->
+    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:15px;">
+      <img src="60.avif" 
+           alt="TikTok" 
+           style="width:90px;height:90px;object-fit:contain;">
+    </div>
+
+    <h3 style="margin:5px 0;">Síguenos en TikTok</h3>
+    
+    <p style="font-size:12px;color:#555;margin-bottom:18px;line-height:1.5;">
+      Síguenos para que estés al tanto de nuestros productos para tu vehículo.
+    </p>
+
+    <button class="modalBtn" onclick="seguirAhora()">Seguir ahora</button>
+    
+    <button class="modalBtn" 
+            style="background:#e5e7eb;color:#111;margin-top:8px;"
+            onclick="cerrarTiktok()">
+      Quizás más tarde
+    </button>
+  
+  </div>
+</div>
+
+
+<div id="deliveryBtn" onclick="abrirDelivery()" 
+     style="position:fixed;right:18px;bottom:180px;background:#ffffff;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);z-index:1500;cursor:pointer;">
+  🚚
+</div>
+<!-- MODAL DELIVERY -->
+<div class="modal" id="deliveryModal">
+  <div class="modalContent">
+    <div class="modalBody" style="text-align:center;">
+      <h3 style="margin-bottom:12px;">🚚 Servicio a Domicilio</h3>
+      <img src="23.jpeg" alt="Delivery" style="width:120px;height:120px;object-fit:contain;margin-bottom:12px;">
+      <p style="font-size:14px;line-height:1.5;margin-bottom:12px;">
+        Entregamos tus productos <strong>en todo Somoto</strong> directamente a tu domicilio.
+        Solo realiza tu pedido y nosotros nos encargamos del resto.
+      </p>
+      <p style="font-size:13px;color:#555;margin-bottom:20px;">
+        Tiempo estimado de entrega: <strong>20 minutos hábiles</strong>. 
+        Aplican cargos según la ubicación.
+      </p>
+      <button class="modalBtn" onclick="contactarDelivery()">Contactar Delivery</button>
+      <button class="modalBtn" style="background:#e5e7eb;color:#111;margin-top:8px;" onclick="cerrarDelivery()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- BARRA INFERIOR -->
+
+<nav class="bottomNav">
+  <a href="index.html" class="navItem active">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 12l9-9 9 9v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/>
+    </svg>
+    <small>Inicio</small>
+  </a>
+
+  <a href="carritoYoluvami.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M6 6h15l-1.5 9h-13L6 6zm0 0l-2-4H1"/>
+    </svg>
+    <small>Carrito</small>
+  </a>
+
+  <a href="registroYoluvami.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h12v2H3v-2zm0 4h8v2H3v-2z"/>
+    </svg>
+    <small>Ventas</small>
+  </a>
+</nav>
+
+<script>const productos = [
+{name:"Mobil Special 20W-50 - Aceite para motor",price:1060,cat:"motor",img:"30.jpeg",desc:"Mobil Special 20W-50 es un aceite mineral de alta calidad diseñado para brindar protección confiable al motor en condiciones de trabajo exigentes. Su fórmula ayuda a reducir el desgaste y mantener el motor limpio, prolongando su vida útil."},
+{name:"CLEAN ALL",price:180,cat:"motor",img:"39.jpeg",desc:`Es un limpiador espumoso multiusos diseñado especialmente para la limpieza interior y exterior de vehículos. 
+Su poderosa fórmula en espuma penetra profundamente en la suciedad, ayudando a remover manchas difíciles, polvo y grasa sin dañar las superficies.
+Viene en presentación de 650 ml, ideal tanto para uso profesional en talleres y autolavados como para uso doméstico.`},
+{name:"Freezetone - Engine Radiator Additiv",price:230,cat:"motor",img:"40.jpeg",desc:`Aditivo / Refrigerante para Radiador de alto rendimiento, formulado con tecnología de larga duración para proteger y optimizar el sistema de enfriamiento del motor.`},
+{name:"Freezetone – Refrigerante Rojo Long Life",price:230,cat:"motor",img:"41.jpeg",desc:`Refrigerante de larga duración con tecnología avanzada para máxima protección contra corrosión y sobrecalentamiento.`},
+{name:"Flamingo Foam Cleaner – Limpiador Espumoso Multiusos",price:150,cat:"motor",img:"44.jpeg",desc:`Limpiador espumoso multiuso para limpieza profunda del interior del vehículo.`},
+{name:"Coolzone Battery Water – Agua Desmineralizada para Batería",price:100,cat:"motor",img:"51.jpeg",desc:`Agua desmineralizada lista para usar, libre de minerales e impurezas.`},
+{name:"Agua Desmineralizada",price:80,cat:"motor",img:"52.jpeg",desc:`Agua purificada sin minerales para usos técnicos y automotrices.`},
+{name:"Swiss Drive Accordion Front Sun Shade – Parasol Delantero Plegable",price:260,cat:"motor",img:"53.jpeg",desc:`Parasol delantero reflectivo que bloquea calor y rayos UV.`},
+{name:"Aceite de motor 4T Yamalube 20W-50 (1L)",price:270,cat:"motor",img:"61.jpeg",desc:`Lubricante mineral de alto rendimiento para motores 4 tiempos.`},
+{name:"Havoline 2-Cycle Engine Oil TC-W3 – Chevron",price:330,cat:"motor",img:"62.jpeg",desc:`Aceite formulado para motores 2 tiempos (2T).`},
+{name:"Aceite de Motor Havoline Synblend SAE 20W-50",price:1100,cat:"motor",img:"64.jpeg",desc:`Lubricante semisintético para motores a gasolina.`},
+{name:"Raloy Transmisión Extrema Presión SAE 80W-90 API GL-5",price:250,cat:"motor",img:"65.jpeg",desc:`Aceite para transmisión diseñado para condiciones de extrema presión.`},
+{name:"Shell Advance AX5 20W-50 4T",price:280,cat:"motor",img:"66.jpeg",desc:`Aceite mineral premium para motocicletas 4T.`},
+{name:"Mobil Delvac 1300 Super 10W-30",price:1350,cat:"motor",img:"75.jpeg",desc:`Aceite premium sintético para motores diésel, diseñado para ofrecer mayor protección, limpieza y rendimiento en motores de trabajo pesado`},
+{name:"Shell Helix HX5 20W-50",price:1200,cat:"motor",img:"76.jpeg",desc:`Aceite multigrado para motores a gasolina que ayuda a mantener el motor limpio y protegido gracias a su tecnología de limpieza activa.o`},
+{name:"Auto Super Heavy Duty Power Brake DOT 3 (Tapa Azul)",price:85,cat:"motor",img:"82.jpeg",desc:`Líquido de frenos DOT 3 de alta calidad, diseñado para sistemas de freno de disco y tambor. Proporciona excelente transmisión de presión, buen punto de ebullición y protección contra la corrosión, ayudando a mantener un frenado seguro y confiable.`},
+{name:"Tapa de Radiador 0.9",price:180,cat:"motor",img:"83.jpeg",desc:`La tapa de radiador 0.9 bar regula la presión del sistema de enfriamiento del vehículo. Su función es mantener la presión adecuada dentro del radiador para evitar el sobrecalentamiento y la pérdida de refrigerante.`},
+{name:"Letrero de Taxi con Imán",price:250,cat:"motor",img:"84.jpeg",desc:`Letrero luminoso para taxi con base magnética, ideal para colocarse fácilmente sobre el techo del vehículo. Brinda mayor visibilidad y profesionalismo, asegurando una sujeción firme sin necesidad de instalación permanente. Práctico, resistente y fácil de quitar cuando no esté en uso.`},
+{name:"Letrero Luminoso de Taxi LED con Imán",price:600,cat:"motor",img:"89.jpeg",desc:`Letrero iluminado con tecnología LED, ideal para colocar en el techo del vehículo. Cuenta con base magnética de alta fijación para una instalación rápida y segura. Resistente al agua, de gran brillo y excelente visibilidad, perfecto para brindar mayor presencia y profesionalismo al servicio de taxi.`},
+{name:"Soporte Lumbar Ergonómico para Asiento",price:850,cat:"motor",img:"90.jpeg",desc:`Cojín de soporte lumbar diseñado para brindar mayor comodidad y correcta postura al conducir o trabajar. Se adapta a la curva natural de la espalda, ayudando a reducir la fatiga y molestias lumbares. Cuenta con funda removible y lavable, ideal para uso en vehículo, oficina o en el hogar.`},
+{name:"Cojín de Asiento con Bolas de Madera",price:400,cat:"motor",img:"91.jpeg",desc:`Cojín universal para asiento con diseño de bolas de madera que brinda mayor ventilación y efecto masaje al sentarse. Ayuda a reducir la fatiga durante la conducción y mejora la comodidad en viajes largos. Fácil de instalar, ideal para vehículos, oficina o uso en el hogar.
+`},
+{name:"Forro para Timón SWISS DRIVE – Talla L",price:450,cat:"motor",img:"92.jpeg",desc:`Renueva y protege el volante de tu vehículo con el forro original SWISS DRIVE, diseñado en elegante combinación de colores y acabado premium. Talla L compatible con timones de 15.5” a 16.5” (39–41 cm), ideal para camionetas y SUV grandes.
+`},
+{name:"Forro para Timón SWISS DRIVE",price:450,cat:"motor",img:"93.jpeg",desc:`Renueva y protege el volante de tu vehículo con el forro original SWISS DRIVE, diseñado en elegante combinación de colores y acabado premium. `},
+{name:"Forro para Timón SWISS DRIV",price:450,cat:"motor",img:"94.jpeg",desc:`Renueva y protege el volante de tu vehículo con el forro original SWISS DRIVE, diseñado en elegante combinación de colores y acabado premium. `},
+{name:"Forro para Timón Universal Bicolor",price:250,cat:"motor",img:"95.jpeg",desc:`Protege y renueva el interior de tu vehículo con este forro para timón en diseño bicolor negro y café. Fabricado con material resistente y antideslizante, brinda un agarre cómodo y seguro al conducir. Fácil de instalar y compatible con la mayoría de timones estándar. Ideal para mejorar la apariencia y prolongar la vida útil del volante.
+`},
+{name:"Escobillas Limpiaparabrisas numeraciones disponibles",price:250,cat:"motor",img:"96.jpeg",desc:`Escobillas  fabricadas con goma resistente y flexible que garantizan una limpieza uniforme y sin rayas. Ideales para reemplazar las originales y mantener una visión clara en días de lluvia. Fáciles de instalar y compatibles con la mayoría de vehículos.`},
+{name:"Forro para Timón SWISS DRIVE – Talla MV",price:450,cat:"motor",img:"97.jpeg",desc:`
+Renueva y protege el volante de tu vehículo con el forro original SWISS DRIVE, diseñado en elegante combinación de colores y acabado premium. `},
+{name:"Escobillas de 20” pulgadas",price:350,cat:"motor",img:"98.jpeg",desc:`Escobillas de 20” pulgadas con diseño resistente y goma de alta calidad que garantiza una limpieza suave y sin rayas. Ideales para reemplazo y mantener una visibilidad clara en lluvia o polvo. Fáciles de instalar y compatibles con la mayoría de vehículos.
+`},
+{name:"Tapetes Universales Checker Plate – 4 Piezas",price:650,cat:"motor",img:"99.jpeg",desc:`juego de tapetes universales fabricados en PVC resistente con diseño tipo checker plate que brinda mayor durabilidad y estilo deportivo. Protegen el piso del vehículo contra polvo, lodo y derrames. Fáciles de limpiar y adaptables a la mayoría de autos. Ideal para mantener el interior limpio y protegido.`},
+{name:"Aceite de motor Mobil Special 20W-50 Presentación de 946ml",price:300,cat:"motor",img:"01.jpeg",desc:`Lubricante de calidad para motores a gasolina, formulado para brindar protección confiable y un funcionamiento suave del motor en condiciones de manejo diarias.`},
+{name:"Aceite para motocicleta Mobil Super Moto 4T 20W-50",price:300,cat:"motor",img:"02.jpeg",desc:`
+Lubricante de alto desempeño diseñado para motores de motocicletas de 4 tiempos, proporcionando protección confiable, limpieza del motor y un funcionamiento suave en diferentes condiciones de manejo.
+`},
+
+{name:"Ambientador automotriz Meguiar's Whole Car Air Re-Fresher",price:550,cat:"motor",img:"04.jpeg",desc:`Eliminador de olores para el interior del vehículo que neutraliza olores atrapados en tapicería, alfombras y sistema de aire acondicionado, dejando una fragancia fresca en todo el auto.`},
+{name:"Paño de Microfibra Multiusos",price:35,cat:"motor",img:"05.jpeg",desc:`Paño de microfibra suave y resistente, ideal para la limpieza y secado de superficies sin rayar. Perfecto para vehículos, vidrios, pantallas y más. Alta absorción y fácil lavado, brinda un acabado limpio y brillante en cada uso.  35C$ por unidad`},
+{name:"Flamingo Rubbing Compound",price:250,cat:"motor",img:"06.jpeg",desc:`Compuesto pulidor ideal para restaurar y renovar la pintura del vehículo. Ayuda a eliminar rayones leves, manchas y marcas de oxidación, devolviendo el brillo original.`},
+{name:"Grasa de Alta Temperatura #2",price:250,cat:"motor",img:"07.jpeg",desc:`Grasa lubricante de alta temperatura diseñada para proteger y lubricar piezas mecánicas sometidas a fricción y calor. Ideal para uso automotriz e industrial.`},
+{name:"Aceite para Moto Bajaj DTS-i 20W50 presentación:1.2",price:340,cat:"motor",img:"08.jpeg",desc:`Aceite lubricante especialmente formulado para motores de motocicletas Bajaj. Proporciona protección, buen rendimiento y un funcionamiento más suave del motor.
+`},
+{name:"WD-40 Producto Multiusos",price:210,cat:"motor",img:"09.jpeg",desc:`Lubricante en aerosol ideal para el mantenimiento del hogar, taller y vehículo. Afloja piezas oxidadas, elimina chirridos y protege contra la humedad.
+`},
+{name:"chispero de cobre Autolite 3924",price:140,cat:"motor",img:"010.jpeg",desc:`Chispero de cobre diseñadas para ofrecer un encendido confiable y buen rendimiento del motor. Proporcionan una chispa eficiente que ayuda a mantener una combustión estable.`},
+{name:"Emblema / Logo Frontal Toyota Cromado",price:180,cat:"motor",img:"011.jpeg",desc:`Emblema decorativo para vehículos Toyota, fabricado en material resistente con acabado cromado de alta calidad. Diseñado para colocarse en el capó o parte frontal del vehículo, brindando una apariencia elegante y original. `},
+{name:"Batería América Racing NS40ZL",price:3200,cat:"motor",img:"012.jpeg",desc:`Batería automotriz diseñada para ofrecer alta potencia de arranque y un rendimiento confiable. Su construcción resistente y libre de mantenimiento proporciona mayor durabilidad y desempeño estable para vehículos. Ideal para garantizar un arranque rápido y eficiente en el uso diario.
+`},
+{name:"Luz LED Decorativa para Vehículo (Calavera)",price:800,cat:"motor",img:"013.jpeg",desc:`Luz LED con diseño de calavera que brinda una iluminación potente y un estilo único para tu vehículo o motocicleta. Ideal para personalización y mejor visibilidad.`},
+{name:"Luz LED Decorativa para Vehículo (Calavera)",price:800,cat:"motor",img:"014.jpeg",desc:`
+Luz LED con diseño de calavera que brinda una iluminación potente y un estilo único para tu vehículo o motocicleta. Ideal para personalización y mejor visibilidad.`},
+{name:"Porta Placa Deportivo XT Racing",price:300,cat:"motor",img:"015.jpeg",desc:`Marco porta placa metálico con diseño deportivo y acabado en color negro. Compatible con placas estándar, ofrece una instalación sencilla y sujeción firme. Ideal para darle a tu vehículo un estilo racing moderno y personalizado.
+`},
+{name:"Gata Mecánico para Vehículo (2 Toneladas)",price:900,cat:"motor",img:"016.jpeg",desc:`Gata  mecánico tipo tijera diseñado para levantar vehículos de forma segura durante cambios de llanta o trabajos básicos de mantenimiento.`},
+{name:"Porta Placa Deportivo XT Racing",price:300,cat:"motor",img:"017.jpeg",desc:`Marco porta placa metálico con diseño deportivo y acabado en color negro. Compatible con placas estándar, ofrece una instalación sencilla y sujeción firme. Ideal para darle a tu vehículo un estilo racing moderno y personalizado. 300 el par`},
+{name:"Protector de Manigueta / Pedal PROTAPER",price:150,cat:"motor",img:"018.jpeg",desc:`
+Cubiertas de goma resistentes diseñadas para brindar mayor agarre y protección a la manigueta o pedal. Fabricadas en material duradero y antideslizante, ayudan a mejorar el control y la seguridad al conducir. Ideales para motos, aportando estilo deportivo y protección contra desgaste.
+`},
+
+
+{name:"Limpiador Electrónico de Secado Rápido Johnsen’s",price:230,cat:"motor",img:"020.jpeg",desc:`Limpiador electrónico de secado rápido diseñado para remover aceite, grasa, suciedad y residuos en componentes eléctricos y electrónicos. Su fórmula de precisión limpia eficazmente sin dejar residuos y es seguro para la mayoría de plásticos. Ideal para conectores, circuitos, sensores y equipos electrónicos, ayudando a mantener  un funcionamiento óptimo.`},
+{name:"Limpiador de Contactos Electrónicos Flamingo",price:160,cat:"motor",img:"021.jpeg",desc:`Limpiador de Contactos Electrónicos Flamingo
+Limpiador en aerosol de secado rápido diseñado para eliminar polvo, grasa, humedad y residuos en componentes eléctricos y electrónicos. Mejora la conductividad y ayuda a prevenir fallas en conexiones. Ideal para sensores, conectores, interruptores y sistemas eléctricos de vehículos y equipos electrónicos.`},
+{name:"Extintor de Incendios Swiss Drive 1 Kg",price:650,cat:"motor",img:"022.jpeg",desc:`Extintor portátil de polvo químico seco diseñado para apagar incendios de tipo A, B y C. Ideal para vehículos, hogares, oficinas y negocios. Es recargable, fácil de usar y proporciona una respuesta rápida ante emergencias, ayudando a proteger personas y bienes.
+`},
+{name:"Meguiar’s Detailer Shampoo Plus",price:1100,cat:"motor",img:"023.jpeg",desc:`Shampoo profesional para lavado de vehículos que genera abundante espuma y ayuda a remover suciedad, polvo y residuos sin dañar la pintura. Su fórmula lubricante reduce el riesgo de rayones y deja un acabado limpio y brillante.`},
+{name:"Grasa Blanca de Litio MANNOL 8121",price:200,cat:"motor",img:"024.jpeg",desc:`Lubricante en aerosol de alta calidad a base de litio, diseñado para reducir la fricción y proteger piezas metálicas contra el desgaste, la humedad y la corrosión. Proporciona una lubricación duradera en bisagras, engranajes, rieles y mecanismos móviles. Ideal para uso automotriz, industrial y doméstico.`},
+{name:"Cables de Arranque Profesional 10FT – 6 Gauge (400 AMP)",price:1350,cat:"motor",img:"025.jpeg",desc:`Cables de arranque resistentes diseñados para auxiliar baterías descargadas de forma rápida y segura. Con una longitud de 10 pies y calibre 6 Gauge, ofrecen excelente conductividad para vehículos de gasolina hasta 3.5L y diésel hasta 5.5L.
+`},
+
+
+
+{name:"Limpiador de inyectores Liqui Moly Injection Reiniger",price:280,cat:"motor",img:"130.jpeg",desc:`Aditivo diseñado para limpiar el sistema de inyección de gasolina, eliminando depósitos en inyectores y válvulas. Ayuda a mejorar la combustión, el rendimiento del motor y reducir emisiones.
+.
+`},
+{name:"Espuma extintora portátil",price:190,cat:"motor",img:"131.jpeg",desc:`Espuma extintora portátil diseñada para apagar incendios pequeños de forma rápida y segura. Ideal para vehículos, talleres, hogares y emergencias inesperadas.`},
+{name:"Aromatizante para Auto Air Freshener – Vent Clips",price:170,cat:"motor",img:"136.jpeg",desc:`Aromatizante para automóvil con difusores de aceite perfumado que se colocan en las rejillas del aire del vehículo. Ayuda a eliminar malos olores y mantener un ambiente fresco y agradable dentro del auto. Disponible en presentaciones de 3 y 4 piezas con diferentes fragancias.`},
+{name:"Aromatizante para auto Little Trees Fiber Can – Cherry Blast",price:180,cat:"motor",img:"137.jpeg",desc:`Aromatizante en lata diseñado para eliminar malos olores y mantener un ambiente fresco dentro del vehículo con un agradable aroma a cereza.
+`},
+{name:"Soporte Universal para Smartphone SWISS DRIVE",price:330,cat:"motor",img:"138.jpeg",desc:`Soporte para celular con diseño universal y base de succión resistente. Cuenta con rotación de 360° para ajustar el ángulo de visión según tu comodidad. Ideal para mantener el teléfono seguro mientras conduces, brindando mayor practicidad y seguridad al manejar.`},
+{name:"Esponjas aplicadoras de cera o pulido Meguiar’s",price:100,cat:"motor",img:"139.jpeg",desc:`Esponjas de espuma suave diseñadas para la aplicación uniforme de ceras, pulimentos y abrillantadores en la carrocería del vehículo. Su material de alta calidad permite distribuir el producto de forma pareja sin rayar la pintura.`},
+{name:"Aromatizante en spray para auto Little Trees New Car Scent",price:170,cat:"motor",img:"140.jpeg",desc:`Aromatizante en spray que elimina malos olores y deja un agradable aroma a auto nuevo en el interior del vehículo.
+
+`},
+
+
+{name:"ATF Type A – Master Lube",price:150,cat:"motor",img:"141.jpeg",desc:`ATF Type A – Master Lube
+Fluido para transmisiones automáticas diseñado para lubricar, enfriar y proteger los componentes internos de la caja. Ayuda a lograr cambios suaves, reduce el desgaste y prolonga la vida útil del sistema.`},
+{name:"Grasa Golden Oil Litio EP-2 (500 g)",price:270,cat:"motor",img:"142.jpeg",desc:`Grasa multipropósito de litio diseñada para la lubricación y protección de piezas mecánicas. Ofrece excelente resistencia a la presión, al desgaste y a la humedad, ayudando a prolongar la vida útil de rodamientos, chasis y componentes automotrices. Ideal para uso en vehículos, maquinaria y equipos en general`},
+
+{name:"Silicón Mega Grey",price:170,cat:"motor",img:"143.jpeg",desc:`Sellador de silicón de alta resistencia diseñado para crear o reforzar empaques en motores y componentes automotrices. Ideal para soportar vibraciones, altas temperaturas y evitar fugas.
+`},
+{name:"Buje / Goma de Amortiguador",price:50,cat:"motor",img:"144.jpeg",desc:`Buje de goma fabricado con material resistente y flexible, diseñado para absorber vibraciones y proteger los componentes del sistema de suspensión del vehículo.`},
+{name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L",price:190,cat:"motor",img:"134.jpeg",desc:`Aceite mineral especialmente formulado para motores de motocicletas de 4 tiempos. Proporciona excelente lubricación, protección contra el desgaste y mejor desempeño del motor en diferentes condiciones de manejo. Su fórmula ayuda a mantener el motor limpio y a prolongar su vida útil.
+
+`},
+
+{name:"Auto Super Heavy Duty Power Brake DOT 3",price:85,cat:"motor",img:"148.jpeg",desc:`Líquido de frenos DOT 3 de alto rendimiento, diseñado para sistemas de freno de disco y tambor. Garantiza una respuesta segura, óptima presión hidráulica y protección contra la corrosión.`},
+
+{name:"Perilla Universal para Palanca de Cambios",price:270,cat:"motor",img:"150.jpeg",desc:`Perilla para palanca de cambios con diseño deportivo que mejora la apariencia y el agarre al conducir. Ideal para darle un estilo moderno al interior de tu vehículo.
+`},
+{name:"Aceite de motor TotalEnergies Rubia TIR 7400 15W-40",price:1060,cat:"motor",img:"149.jpeg",desc:`Lubricante de alto rendimiento formulado para motores diésel de trabajo pesado. Diseñado para proteger el motor en condiciones exigentes y mantener un desempeño confiable en recorridos largos y carga intensa.`},
+{name:"Mannol M-40 Lubricant 9892",price:180,cat:"motor",img:"151.jpeg",desc:`Lubricante multifuncional en aerosol ideal para mantenimiento automotriz, industrial y doméstico. Protege, lubrica y ayuda a aflojar piezas oxidadas o trabadas.
+`},
+
+
+{name:"Formula 1 Protectant Spray",price:250,cat:"motor",img:"152.jpeg",desc:`Protector y aromatizante en spray para interiores de vehículo. Limpia, protege y da brillo a superficies de plástico, vinil y tablero, dejando un agradable aroma (Cherry, Strawberry y New Car).`},
+
+{name:"Bombillos Automotrices",price:40,cat:"motor",img:"153.jpeg",desc:`Bombillos para vehículos diseñados para brindar una iluminación clara y confiable. Ideales para luces de freno, direccionales, reversa y otras aplicaciones del automóvil.
+`},
+{name:"Envase para Combustible 5 Litros (5L)",price:390,cat:"motor",img:"154.jpeg",desc:`Envase resistente y práctico diseñado para el almacenamiento y transporte seguro de combustible. Fabricado en plástico de alta resistencia, ideal para uso doméstico, automotriz o industrial.`},
+{name:"Havoline Gear Oil 80W-90",price:350,cat:"motor",img:"155.jpeg",desc:`Havoline Gear Oil 80W-90 es un aceite lubricante para engranajes de alto desempeño, formulado especialmente para transmisiones manuales y diferenciales que requieren especificación API GL-5. Es un producto de la marca Havoline, respaldada por Chevron, reconocida por su calidad en lubricantes automotrices.
+
+`},
+
+
+{name:"Liqui Moly Motorbike 4T 10W-40 Street",price:430,cat:"motor",img:"156.jpeg",desc:`Aceite premium para motocicletas 4 tiempos, ideal para uso urbano y en carretera. Su viscosidad 10W-40 brinda excelente protección contra el desgaste, estabilidad a altas temperaturas y cambios de marcha más suaves.`},
+{name:"Aceite de Motor Havoline Synblend SAE 20W-50 ",price:430,cat:"motor",img:"157.jpeg",desc:`Lubricante semisintético para motores a gasolina que ayuda a proteger contra el desgaste, mantener el motor limpio y ofrecer un rendimiento confiable en diferentes condiciones de manejo.
+`},
+
+{name:" Ambientador automotriz Meguiar's Whole Car Air Re-Fresher",price:550,cat:"motor",img:"158.jpeg",desc:`Eliminador de olores para el interior del vehículo que neutraliza olores atrapados en tapicería, alfombras y sistema de aire acondicionado, dejando una fragancia fresca en todo el auto.`},
+
+
+{name:"Havoline Synblend SAE 20W-50 Motor Oil (1 Quart)",price:300,cat:"motor",img:"159.jpeg",desc:`Aceite de motor semisintético diseñado para motores a gasolina, que brinda excelente protección contra el desgaste y altas temperaturas. Su fórmula ayuda a mantener el motor limpio, mejora el rendimiento y prolonga la vida útil del motor. Cumple con la especificación API SQ y es ideal para un desempeño confiable en el uso diario.`},
+{name:"Motul 5100 4T 20W-50",price:380,cat:"motor",img:"160.jpeg",desc:`Aceite de motor para motocicletas de 4 tiempos, formulado con tecnología Technosynthese®️ y Ester que brinda buena protección, funcionamiento suave y rendimiento confiable en uso diario o recorridos largos.
+`},
+
+{name:" Pottensa Anti Rust Lubricant Spray",price:150,cat:"motor",img:"161.jpeg",desc:`Lubricante multiusos en aerosol diseñado para aflojar piezas oxidadas, proteger contra la corrosión y mejorar el funcionamiento de mecanismos metálicos.`},
+
+{name:"Aceite de motor Toyota Motor Oil SP 10W-30 Semi Synthetic ",price:1150,cat:"motor",img:"162.jpeg",desc:`Lubricante semi sintético para motores gasolina, diseñado para brindar protección eficiente, limpieza interna del motor y un rendimiento confiable en diferentes condiciones de manejo.`},
+{name:"Aceite de Motor Toyota 15W-40 para Diésel (1 Quart)",price:320,cat:"motor",img:"163.jpeg",desc:`Aceite de alta calidad diseñado para motores diésel, formulado para brindar excelente protección contra el desgaste, la oxidación y la acumulación de depósitos. Cumple con especificaciones CJ-4 / CF-4 y está aprobado por Toyota, ayudando a mantener el motor limpio y funcionando de manera eficiente. Ideal para prolongar la vida útil del motor y asegurar un rendimiento confiable en condiciones exigentes.`},
+
+{name:"Limpiador de Contactos Eléctricos MANNOL 9893",price:180,cat:"motor",img:"164.jpeg",desc:`Limpiador en aerosol especialmente formulado para eliminar suciedad, grasa, humedad y residuos en contactos eléctricos. Mejora la conductividad y ayuda a prevenir fallas eléctricas, asegurando un funcionamiento más eficiente de los sistemas. Ideal para conectores, sensores, interruptores y componentes eléctricos de autos y equipos electrónicos. `},
+
+{name:"Limpiador de Carburador y Choke Flamingo",price:150,cat:"motor",img:"165.jpeg",desc:`Limpiador en aerosol formulado para eliminar residuos de combustible, goma, barniz y suciedad acumulada en carburadores, chokes y sistemas de admisión. Ayuda a restaurar el rendimiento del motor, facilitando una mejor combustión y un funcionamiento más eficiente. Ideal para el mantenimiento de autos, motocicletas y equipos con carburador.`},
+
+
+
+
+{name:"Empaque de tapa de válvulas (Kia Picanto)",price:200,cat:"motor",img:"166.jpeg",desc:`Empaque de hule diseñado para sellar de forma eficiente la tapa de válvulas, evitando fugas de aceite y asegurando un óptimo funcionamiento del motor. Incluye sellos para bujías integrados, brindando un ajuste completo y mayor protección. Fabricado con material resistente a altas temperaturas y presión, garantiza durabilidad y precisión.`},
+
+{name:" Empaque de tapa de válvulas (Kia Avella 1997–2005)",price:220,cat:"motor",img:"167.jpeg",desc:`Empaque de hule diseñado para sellar eficazmente la tapa de válvulas, evitando fugas de aceite y garantizando un óptimo rendimiento del motor. Fabricado con material resistente a altas temperaturas, ofrece durabilidad y un ajuste preciso.`},
+
+
+{name:`Cinchos plásticos de sujeción (bridas) Medidas: 7.21x445mm`,price:7,cat:"motor",img:"168.jpeg",desc:`Prácticos cinchos plásticos ideales para asegurar, organizar y sujetar cables, mangueras u otros objetos. Fabricados en material resistente y flexible, ofrecen un cierre firme y seguro de fácil uso. Su diseño permite un ajuste rápido, siendo perfectos para uso doméstico, automotriz o industrial.`},
+
+{name:"Espárragos de rueda (pernos de rueda)",price:60,cat:"motor",img:"169.jpeg",desc:`Espárragos metálicos diseñados para fijar de forma segura las ruedas del vehículo al cubo. Fabricados en acero de alta resistencia, ofrecen excelente durabilidad y soporte ante altas cargas y vibraciones. Su diseño estriado permite un ajuste firme y preciso.`},
+
+
+
+{name:"Aditivo para diésel Liqui Moly Super Diesel Additive",price:280,cat:"motor",img:"170.jpeg",desc:`Aditivo diseñado para limpiar el sistema de inyección diésel, mejorar la combustión y ayudar a mantener el motor funcionando de manera más eficiente. Reduce depósitos, humo y protege los componentes del sistema de combustible.`},
+
+
+{name:`Lubricante para Cadenas y Cables Johnsen’s`,price:190,cat:"motor",img:"171.jpeg",desc:`Lubricante especialmente formulado para proteger y reducir la fricción en cadenas, cables y mecanismos móviles. Su fórmula de alta adherencia penetra y lubrica eficazmente, ayudando a prevenir el desgaste, la corrosión y el ruido. Ideal para motocicletas, bicicletas y diferentes aplicaciones mecánicas. 
+`},
+
+{name:"Emblema / Logo Frontal Hyundai Cromado",price:150,cat:"motor",img:"172.jpeg",desc:`Emblema decorativo para vehículos Hyundai, fabricado en material resistente con acabado cromado de alta calidad. Diseñado para colocarse en la parrilla o parte frontal del vehículo, brindando una apariencia original y elegante.`},
+
+
+{name:`Aceite de motor TotalEnergies Quartz 5000 SN 20W-50 `,price:1100,cat:"motor",img:"173.jpeg",desc:`Lubricante de motor mineral de alto desempeño diseñado para motores a gasolina. Proporciona buena protección contra el desgaste, ayuda a mantener el motor limpio y asegura un funcionamiento estable incluso en climas cálidos o condiciones exigentes.
+`},
+
+{name:`Cinchos plásticos de sujeción (bridas) Medidas:5x350`,price:5,cat:"motor",img:"174.jpeg",desc:`Prácticos cinchos plásticos ideales para asegurar, organizar y sujetar cables, mangueras u otros objetos. Fabricados en material resistente y flexible, ofrecen un cierre firme y seguro de fácil uso. Su diseño permite un ajuste rápido, siendo perfectos para uso doméstico, automotriz o industrial.`},
+
+
+{name:`Aceite para Motor 4T 20W-50 – Motul 3000`,price:320,cat:"motor",img:"175.jpeg",desc:`Aceite mineral de alto rendimiento para motocicletas de 4 tiempos, diseñado para proteger el motor, mejorar la limpieza interna y ofrecer cambios de marcha suaves en uso diario y condiciones exigentes.
+`},
+
+{name:`Aceite de motor Chevron Ursa HD SAE 50`,price:1300,cat:"motor",img:"176.jpeg",desc:`Lubricante de alto desempeño para motores diésel de servicio pesado, formulado para ofrecer protección confiable bajo cargas altas y temperaturas elevadas. Ideal para trabajo continuo y condiciones exigentes.
+`},
+
+
+{name:`Limpiador de Carburador MANNOL 9970`,price:180,cat:"motor",img:"177.jpeg",desc:`Limpiador en aerosol diseñado para eliminar residuos de combustible, grasa, suciedad y depósitos de carbón en carburadores y sistemas de admisión. Ayuda a mejorar el rendimiento del motor, facilitando una combustión más eficiente y un funcionamiento más suave. Ideal para mantenimiento de motocicletas, autos y equipos con carburador. 
+`},
+
+{name:`Mannol 9893 Limpiador de Contactos `,price:180,cat:"motor",img:"178.jpeg",desc:`Limpiador de contactos eléctricos de secado rápido, diseñado para eliminar suciedad, grasa, polvo y residuos en conexiones eléctricas y electrónicas. Mejora la conductividad y el funcionamiento de conectores, sensores y circuitos, sin dejar residuos. Ideal para mantenimiento de sistemas eléctricos automotrices y equipos electrónicos
+`},
+
+
+
+
+{name:`Espuma desinfectante especial para la limpieza interna de cascos de moto.`,price:130,cat:"motor",img:"179.jpeg",desc:`Elimina bacterias, malos olores y suciedad sin dañar el material, dejando una sensación fresca y limpia.
+
+`},
+
+{name:`Aditivo para combustible diésel Akron`,price:100,cat:"motor",img:"180.jpeg",desc:`Aditivo diseñado para mejorar la calidad del diésel, limpiar el sistema de inyección y optimizar el funcionamiento del motor.
+`},
+
+
+{name:` Aditivo para gasolina Akron Gas Treatment`,price:180,cat:"motor",img:"181.jpeg",desc:`Aditivo diseñado para mejorar el rendimiento de la gasolina, limpiar el sistema de combustible y ayudar a mantener el motor funcionando de manera eficiente.
+`},
+
+{name:`Empaque de tapa de válvulas (Toyota 3L)`,price:300,cat:"motor",img:"182.jpeg",desc:`Empaque de hule diseñado para sellar de forma eficiente la tapa de válvulas, evitando fugas de aceite y asegurando un óptimo funcionamiento del motor. Fabricado con material resistente a altas temperaturas y presión, ofrece durabilidad y un ajuste preciso.
+`},
+
+
+
+{name:`Porta Placa Metálico Universal`,price:550,cat:"motor",img:"183.jpeg",desc:`Marco porta placa fabricado en metal 100% hierro, resistente y duradero. Se adapta a todas las placas estándar, brindando una sujeción firme y segura. Ideal para proteger y dar un acabado elegante y deportivo a tu vehículo. Perfecto para uso. 550 el par
+
+
+`},
+
+
+
+
+{name:`Filtro de aceite SEINECA SOF-7-2370 Rosca: 3/4`,price:100,cat:"motor",img:"184.jpeg",desc:`Filtro de aceite de alta calidad diseñado para brindar máxima protección al motor. Fabricado con materiales resistentes, ayuda a retener impurezas y prolonga la vida útil del aceite, asegurando un mejor rendimiento y funcionamiento del vehículo. Ideal para mantenimiento preventivo.
+`},
+
+{name:`Filtro de aceite SEINECA SOF-X-2265 Rosca:20x1.5
+`,price:100,cat:"motor",img:"185.jpeg",desc:`Filtro de aceite de alto rendimiento diseñado para ofrecer máxima protección al motor. Fabricado con materiales duraderos, retiene eficazmente impurezas y prolonga la vida útil del aceite, contribuyendo a un funcionamiento óptimo del vehículo. Ideal para mantenimiento preventivo.`},
+
+
+{name:`Filtro de aceite OK UJ-1915F Rosca:3/4
+`,price:220,cat:"motor",img:"186.jpeg",desc:`Filtro de aceite de alto rendimiento diseñado para brindar máxima protección al motor. Fabricado con materiales de alta calidad, retiene eficazmente impurezas y ayuda a prolongar la vida útil del aceite, asegurando un funcionamiento eficiente del vehículo. Ideal para mantenimiento preventivo.
+`},
+
+{name:`Filtro de aceite OK UJ-1671B Rosca:3/4`,price:150,cat:"motor",img:"187.jpeg",desc:`Filtro de aceite de alto rendimiento diseñado para brindar óptima protección al motor. Fabricado con materiales resistentes, retiene eficazmente impurezas y prolonga la vida útil del aceite, asegurando un mejor desempeño del vehículo. Cuenta con rosca 3/4, ideal para aplicaciones compatibles y mantenimiento preventivo.
+`},
+
+
+
+{name:`Filtro de aceite Vega Vl-3600`,price:180,cat:"motor",img:"188.jpeg",desc:`Filtro de aceite de alto rendimiento diseñado para brindar máxima protección al motor. Fabricado con materiales de alta calidad, retiene eficazmente impurezas y ayuda a prolongar la vida útil del aceite, asegurando un funcionamiento eficiente del vehículo. Ideal para mantenimiento preventivo.
+`},
+
+
+{name:`Protector de cinturón Hyundai (par)`,price:200,cat:"motor",img:"189.jpeg",desc:`Protector acolchado para cinturón de seguridad diseñado para brindar mayor comodidad durante la conducción. Fabricado con material resistente tipo fibra de carbono, ayuda a reducir la fricción en el hombro y cuello, además de aportar un estilo deportivo con el logo Hyundai. Ideal para mejorar la experiencia de manejo.
+`},
+
+
+
+
+{name:`Limpiador manual tipo rodillo`,price:200,cat:"motor",img:"190.jpeg",desc:`Limpiador manual tipo rodillo con diseño ergonómico, ideal para retirar polvo, agua o residuos de superficies lisas como vidrios, espejos y carrocerías. Fabricado con mango resistente y cabezal de malla que facilita una limpieza uniforme y eficiente. Ligero, práctico y fácil de usar.
+`},
+
+{name:`Pulidor líquido para carrocería`,price:600,cat:"motor",img:"191.jpeg",desc:`ideal para restaurar el brillo y eliminar imperfecciones leves en la pintura. Su fórmula ayuda a reducir rayones finos, marcas y opacidad, dejando un acabado uniforme y brillante. Fácil de aplicar y perfecto para el cuidado automotriz.
+`},
+
+
+
+{name:`Llanta Sportrak medida 165/65R13,`,price:1400,cat:"motor",img:"192.jpeg",desc:`diseñada para ofrecer excelente agarre, estabilidad y durabilidad en carretera. Su diseño de banda de rodadura mejora la tracción y el desempeño en distintas condiciones, brindando una conducción segura y eficiente. Ideal para uso urbano.
+`},
+
+
+{name:`Tapones decorativos de aluminio`,price:200,cat:"motor",img:"194.jpeg",desc:` con acabado anodizado y detalle tipo fibra de carbono. Ideales para brindar un toque deportivo y elegante, además de proteger válvulas o componentes contra polvo y suciedad. Resistentes, duraderos y fáciles de instalar.
+
+`},
+
+
+
+
+{name:`Direccionales para motocicleta `,price:250,cat:"motor",img:"195.jpeg",desc:`Luz ámbar, diseñadas para brindar alta visibilidad y seguridad en la vía. Fabricadas con materiales resistentes y de fácil instalación, ideales para reemplazo o mejora del sistema de señalización. Incluyen cableado listo para conexión.`},
+
+
+{name:`Aceite de motor 4 tiempos 10W-40 `,price:380,cat:"motor",img:"196.jpeg",desc:`Motul 5100, formulado con tecnología Ester para una óptima lubricación y protección. Ideal para motocicletas de uso diario y off-road, mejora el rendimiento del motor, facilita cambios suaves y ofrece un arranque eficiente. Presentación de 1 litro.`},
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let productoActual = null;
+
+/* ELEMENTOS */
+const cartBtn = document.getElementById("cartBtn");
+const cartCount = document.getElementById("cartCount");
+const productGrid = document.getElementById("productGrid");
+const categoriaFiltro = document.getElementById("categoriaFiltro");
+const precioMin = document.getElementById("precioMin");
+const precioMax = document.getElementById("precioMax");
+
+const productModal = document.getElementById("productModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalDesc = document.getElementById("modalDesc");
+const modalPrice = document.getElementById("modalPrice");
+const modalImg = document.getElementById("modalImg");
+
+const statusElement = document.getElementById("status");
+
+/* ===================== */
+/* CARRITO */
+/* ===================== */
+
+cartCount.innerText = cart.length;
+
+cartBtn.addEventListener("click", openCart);
+
+function openCart(){
+  renderCart();
+  document.getElementById("cartModal").style.display="flex";
+}
+
+function closeCart(){
+  document.getElementById("cartModal").style.display="none";
+}
+
+function renderCart(){
+  const container = document.getElementById("cartItems");
+  container.innerHTML="";
+  let total=0;
+
+  cart.forEach((item,index)=>{
+    total += item.price;
+    container.innerHTML += `
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center;">
+        <img src="${item.img}" style="width:60px;height:60px;object-fit:contain;background:#fff;border-radius:8px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">${item.name}</div>
+          <div style="font-size:12px;">C$${item.price}</div>
+        </div>
+        <button onclick="removeItem(${index})" style="background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 8px;">X</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("cartTotal").innerText="Total: C$"+total;
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  cartCount.innerText=cart.length;
+  renderCart();
+}
+
+function addToCart(index){
+  cart.push(productos[index]);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  cartCount.innerText=cart.length;
+}
+
+function agregarDesdeModal(){
+  if(productoActual){
+    cart.push(productoActual);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    cartCount.innerText=cart.length;
+    closeProduct();
+  }
+}
+
+function irCarrito(){
+  window.location.href = "carritoYoluvami.html";
+}
+/* MODAL INFO */
+function openInfo(){
+  document.getElementById("infoModal").style.display = "flex";
+}
+
+function closeInfo(){
+  document.getElementById("infoModal").style.display = "none";
+}
+/* MODAL DELIVERY */
+function abrirDelivery(){
+  document.getElementById("deliveryModal").style.display="flex";
+}
+function cerrarDelivery(){
+  document.getElementById("deliveryModal").style.display="none";
+}
+function contactarDelivery(){
+  const texto = "Hola 👋, quiero solicitar el servicio de delivery para mi pedido en Somoto.";
+  window.open(`https://wa.me/50583320030?text=${encodeURIComponent(texto)}`, '_blank');
+}
+/* ===================== */
+/* PRODUCTOS */
+/* ===================== */
+function mostrarProductos(){
+
+  let cat = categoriaFiltro.value;
+  let min = precioMin.value;
+  let max = precioMax.value;
+  let texto = document.getElementById("buscador").value.toLowerCase();
+
+  productGrid.innerHTML = "";
+
+  productos
+  .map((p,i)=>({...p, indexReal:i})) // 👈 guardamos el índice real
+  .filter(p =>
+    (cat === "todos" || p.cat === cat) &&
+    (!min || p.price >= min) &&
+    (!max || p.price <= max) &&
+    (p.name.toLowerCase().includes(texto))
+  )
+  .forEach(p=>{
+    productGrid.innerHTML += `
+    <div class="product">
+      <img src="${p.img}" data-id="${p.indexReal}">
+      <div class="product-body">
+        <h4>${p.name}</h4>
+        <div class="price">C$${p.price}</div>
+        <button onclick="addToCart(${p.indexReal})">Agregar</button>
+      </div>
+    </div>`;
+  });
+
+  document.querySelectorAll(".product img").forEach(img=>{
+    img.addEventListener("click",function(){
+      productoActual = productos[this.dataset.id]; // 👈 ahora sí correcto
+      verProducto(productoActual);
+    });
+  });
+}
+
+function verProducto(p){
+  modalTitle.innerText=p.name;
+  modalDesc.innerText=p.desc||"Sin descripción.";
+  modalPrice.innerText="C$"+p.price;
+  modalImg.src=p.img;
+  productModal.style.display="flex";
+}
+
+function closeProduct(){
+  productModal.style.display="none";
+}
+
+/* ===================== */
+/* MODALES AUTOMÁTICOS */
+/* ===================== */
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("bienvenidaModal").style.display = "flex";
+  }, 800);
+});
+
+function cerrarBienvenida(){
+  document.getElementById("bienvenidaModal").style.display = "none";
+  setTimeout(()=>{document.getElementById("tiktokModal").style.display = "flex";},400);
+}
+
+function cerrarTiktok(){
+  document.getElementById("tiktokModal").style.display = "none";
+  setTimeout(()=>{document.getElementById("promoModal").style.display = "flex";},400);
+}
+
+function cerrarPromo(){
+  document.getElementById("promoModal").style.display = "none";
+}
+
+function seguirAhora(){
+  window.open("https://www.tiktok.com/@yoluvami_autopart?_r=1&_t=ZS-94EaAHGjUhk", "_blank");
+}/* ===================== */
+/* HORARIO NICARAGUA */
+/* ===================== */
+
+function actualizarEstado(){
+
+  const ahora = new Date();
+  const opciones = { timeZone: 'America/Managua', hour12: false };
+  const horaNica = new Date(ahora.toLocaleString('en-US', opciones));
+
+  const dia = horaNica.getDay(); // 0=domingo, 6=sábado
+  const hora = horaNica.getHours();
+  const minutos = horaNica.getMinutes();
+  const totalMinutos = hora * 60 + minutos;
+
+  const apertura = 8 * 60 + 30; // 8:30 AM
+
+  let cierre;
+
+  /* ===================== */
+  /* DOMINGO CERRADO */
+  /* ===================== */
+
+  if(dia === 0){
+    statusElement.innerHTML = "🔴 Cerrado · Hoy es domingo";
+    statusElement.className = "status cerrado";
+    return;
+  }
+
+  /* ===================== */
+  /* SABADO */
+  /* ===================== */
+
+  if(dia === 6){
+    cierre = 14 * 60 + 30; // 2:30 PM
+  }else{
+    /* LUNES A VIERNES */
+    cierre = 17 * 60; // 5:00 PM
+  }
+
+  /* ===================== */
+  /* HORARIO ABIERTO */
+  /* ===================== */
+
+  if(totalMinutos >= apertura && totalMinutos < cierre){
+
+    const faltan = cierre - totalMinutos;
+    const h = Math.floor(faltan / 60);
+    const m = faltan % 60;
+
+    statusElement.innerHTML = `🟢 Abierto · Cierra en ${h}h ${m}m`;
+    statusElement.className = "status abierto";
+
+  }else{
+
+    let faltan;
+
+    if(totalMinutos < apertura){
+      faltan = apertura - totalMinutos;
+    }else{
+      faltan = (24 * 60 - totalMinutos) + apertura;
+    }
+
+    const h = Math.floor(faltan / 60);
+    const m = faltan % 60;
+
+    statusElement.innerHTML = `🔴 Cerrado · Abre en ${h}h ${m}m`;
+    statusElement.className = "status cerrado";
+
+  }
+}
+
+setInterval(actualizarEstado,60000);
+actualizarEstado();
+/* ===================== */
+/* FILTROS */
+/* ===================== */
+
+const buscador = document.getElementById("buscador");
+
+categoriaFiltro.addEventListener("change", mostrarProductos);
+precioMin.addEventListener("input", mostrarProductos);
+precioMax.addEventListener("input", mostrarProductos);
+buscador.addEventListener("input", mostrarProductos);
+
+mostrarProductos();
+
+/* ===================== */
+/* INSTALAR APP (PWA) */
+/* ===================== */
+
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+/* detectar si ya está instalada */
+function isAppInstalled(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+/* si ya está instalada ocultar botón */
+if(isAppInstalled()){
+  installBtn.style.display = "none";
+}
+
+/* mostrar botón solo si se puede instalar */
+window.addEventListener("beforeinstallprompt",(e)=>{
+  if(isAppInstalled()) return;
+
+  e.preventDefault();
+  deferredPrompt = e;
+
+  installBtn.style.display = "block";
+});
+
+/* botón instalar */
+installBtn.addEventListener("click", async ()=>{
+  if(!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
+
+  if(choice.outcome === "accepted"){
+    installBtn.style.display = "none";
+  }
+
+  deferredPrompt = null;
+});
+
+/* cuando se instala */
+window.addEventListener("appinstalled", ()=>{
+  installBtn.style.display = "none";
+});
+
+/* ===================== */
+/* SERVICE WORKER */
+/* ===================== */
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+  .then(()=>console.log("Service Worker registrado"))
+  .catch(err=>console.log("Error SW:",err));
+}
+let newWorker;
+
+if("serviceWorker" in navigator){
+
+navigator.serviceWorker.register("sw.js").then(reg=>{
+
+  if(reg.waiting){
+    showUpdate();
+  }
+
+  reg.addEventListener("updatefound",()=>{
+    newWorker = reg.installing;
+
+    newWorker.addEventListener("statechange",()=>{
+      if(newWorker.state === "installed" && navigator.serviceWorker.controller){
+        showUpdate();
+      }
+    });
+  });
+
+});
+
+}
+
+function showUpdate(){
+  document.getElementById("updateBox").style.display = "block";
+}
+
+function updateApp(){
+  if(newWorker){
+    newWorker.postMessage({action:"skipWaiting"});
+  }
+  window.location.reload();
+}
+if("serviceWorker" in navigator){
+
+navigator.serviceWorker.register("sw.js").then(reg=>{
+
+reg.addEventListener("updatefound",()=>{
+
+const newWorker = reg.installing;
+
+newWorker.addEventListener("statechange",()=>{
+
+if(newWorker.state === "installed" && navigator.serviceWorker.controller){
+
+showUpdateToast();
+
+setTimeout(()=>{
+location.reload();
+},2000);
+
+}
+
+});
+
+});
+
+});
+
+}
+
+function showUpdateToast(){
+
+const toast = document.getElementById("updateToast");
+
+toast.style.display = "block";
+
+setTimeout(()=>{
+toast.style.display = "none";
+},3000);
+
+}
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker.register("sw.js")
+.then(()=>console.log("SW registrado"))
+.catch(err=>console.log(err));
+}
+
+async function activarNotificaciones(){
+
+if(!("Notification" in window)) return;
+
+let permiso = await Notification.requestPermission();
+
+if(permiso === "granted"){
+
+new Notification("YOLUVAMI",{
+body:"Notificaciones activadas 🔔",
+icon:"23.jpeg"
+});
+
+}
+
+}
+// Espera a que el DOM esté listo (mejor que "load" en móvil)
+document.addEventListener("DOMContentLoaded", () => {
+  notificar("🔔 Nuevos productos disponibles");
+});
+
+// Función para mostrar notificación tipo toast
+function mostrarNotificacion(texto) {
+  const contenedor = document.getElementById("notificaciones");
+  
+  if (!contenedor) {
+    console.warn("No existe #notificaciones");
+    return;
+  }
+
+  const div = document.createElement("div");
+  div.className = "notificacion";
+  div.textContent = texto;
+
+  contenedor.appendChild(div);
+
+  // Forzar reflow (mejora animación en móvil)
+  div.offsetHeight;
+
+  // Mostrar animación
+  div.classList.add("mostrar");
+
+  // Vibración en móvil (si el dispositivo lo permite)
+  if (navigator.vibrate) {
+    navigator.vibrate(100);
+  }
+
+  // Desaparece después de 4 segundos
+  setTimeout(() => {
+    div.classList.remove("mostrar");
+    setTimeout(() => div.remove(), 400);
+  }, 4000);
+}
+
+// Función para notificación del sistema (más segura)
+function notificacionSistema(texto) {
+  // En muchos móviles no funciona → evitamos errores
+  if (!("Notification" in window)) return;
+
+  // Solo si ya está permitido
+  if (Notification.permission === "granted") {
+    new Notification(texto);
+  }
+}
+
+// Función principal
+function notificar(texto){
+  mostrarNotificacion(texto); // ✅ siempre funciona
+  notificacionSistema(texto); // ⚠️ opcional
+}
+
+</script>
+
+</body>
+</html>
