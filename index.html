@@ -627,7 +627,35 @@ transform:translate(-50%,0);
   box-shadow:0 4px 12px rgba(0, 0, 0, 0.3);
   transition:0.3s;
 }
+.status{
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
 
+  transition: all 0.4s ease;
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* EFECTO CUANDO CAMBIA */
+.status.animar{
+  transform: scale(1.05);
+  opacity: 0.7;
+}
+
+/* ESTADOS */
+.status.abierto{
+  background: #16a34a;
+  color: white;
+  box-shadow: 0 4px 15px rgba(22,163,74,0.4);
+}
+
+.status.cerrado{
+  background: #dc2626;
+  color: white;
+  box-shadow: 0 4px 15px rgba(220,38,38,0.4);
+}
 /* 📱 MÓVIL (ESPACIO A LOS LADOS) */
 @media (max-width:600px){
   .buscador-container{
