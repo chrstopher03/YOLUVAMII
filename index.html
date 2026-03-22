@@ -1575,30 +1575,37 @@ let audioActivo = false;
 // Estado de sonido (guardado)
 let sonidoHabilitado = localStorage.getItem("sonidoNotif") !== "off";
 
-// ================== SONIDOS PREMIUM ==================
-const sonidos = {
-  success: new Audio("https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8630b1c68.mp3"),
-  error: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c1d9d3c1f.mp3"),
-  carrito: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3"),
-  info: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3")
-};
-
-// Volumen estilo iPhone (suave pero claro)
-Object.values(sonidos).forEach(s => s.volume = 0.8);
-
-// ================== ACTIVAR AUDIO EN MÓVIL ==================
-document.addEventListener("click", activarAudio, { once: true });
-document.addEventListener("touchstart", activarAudio, { once: true });
+// ================== AUDIO FIX MÓVIL ==================
+let sonidos = {};
 
 function activarAudio() {
+  if (audioActivo) return;
+
+  // Crear sonidos DESPUÉS del toque (clave en móvil)
+  sonidos = {
+    success: new Audio("https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8630b1c68.mp3"),
+    error: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c1d9d3c1f.mp3"),
+    carrito: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3"),
+    info: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3")
+  };
+
   Object.values(sonidos).forEach(s => {
+    s.volume = 0.9;
+
+    // Truco para desbloquear audio
     s.play().then(() => {
       s.pause();
       s.currentTime = 0;
     }).catch(()=>{});
   });
+
   audioActivo = true;
+  console.log("🔊 Audio ACTIVADO");
 }
+
+// 🔥 IMPORTANTE (sin once)
+document.addEventListener("click", activarAudio);
+document.addEventListener("touchstart", activarAudio);
 
 // ================== BOTÓN SILENCIO ==================
 function crearBotonSonido() {
@@ -1679,17 +1686,19 @@ function mostrarNotificacion(texto, tipo, callback) {
   div.offsetHeight;
   div.classList.add("mostrar");
 
-  // Vibración
+  // 📳 Vibración
   if (navigator.vibrate) navigator.vibrate(80);
 
-  // 🔊 SONIDO POR TIPO
-  if (audioActivo && sonidoHabilitado) {
-    const sonido = sonidos[tipo] || sonidos.info;
-    sonido.currentTime = 0;
-    sonido.play().catch(()=>{});
+  // 🔊 SONIDO REAL
+  if (audioActivo && sonidoHabilitado && sonidos[tipo]) {
+    try {
+      const sonido = sonidos[tipo];
+      sonido.currentTime = 0;
+      sonido.play().catch(()=>{});
+    } catch(e){}
   }
 
-  // Duración
+  // ⏳ Duración
   setTimeout(() => {
     div.classList.remove("mostrar");
     setTimeout(() => {
