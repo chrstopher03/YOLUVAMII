@@ -1539,34 +1539,46 @@ icon:"23.jpeg"
 
 }
 
-}// Espera a que el DOM esté listo
+}// Cola de notificaciones
+let colaNotificaciones = [];
+let mostrando = false;
+
+// Espera DOM
 document.addEventListener("DOMContentLoaded", () => {
   notificar("Nuevos productos disponibles", "info");
-notificar("La app aun sigue en mantenimiento", "error");
+notificar("La app sigue en mantenimiento", "error");
 });
 
-// Sonido (podés cambiarlo si querés)
+// Sonido
 const sonidoNotif = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3?filename=notification-110888.mp3");
 
 // Función principal
 function notificar(texto, tipo = "info"){
-  mostrarNotificacion(texto, tipo);
-  notificacionSistema(texto);
+  colaNotificaciones.push({ texto, tipo });
+  procesarCola();
 }
 
-// Toast PRO
-function mostrarNotificacion(texto, tipo) {
+// Procesa una por una
+function procesarCola(){
+  if (mostrando || colaNotificaciones.length === 0) return;
+
+  mostrando = true;
+
+  const { texto, tipo } = colaNotificaciones.shift();
+  mostrarNotificacion(texto, tipo, () => {
+    mostrando = false;
+    procesarCola(); // siguiente
+  });
+}
+
+// Mostrar notificación
+function mostrarNotificacion(texto, tipo, callback) {
   const contenedor = document.getElementById("notificaciones");
-  
-  if (!contenedor) {
-    console.warn("No existe #notificaciones");
-    return;
-  }
+  if (!contenedor) return;
 
   const div = document.createElement("div");
   div.className = `notificacion ${tipo}`;
 
-  // Iconos según tipo
   const iconos = {
     success: "✔️",
     error: "❌",
@@ -1581,31 +1593,24 @@ function mostrarNotificacion(texto, tipo) {
 
   contenedor.appendChild(div);
 
-  // Forzar animación
   div.offsetHeight;
   div.classList.add("mostrar");
 
   // Vibración
   if (navigator.vibrate) navigator.vibrate(80);
 
-  // Sonido (solo si el usuario ya interactuó con la página)
+  // Sonido
   sonidoNotif.currentTime = 0;
   sonidoNotif.play().catch(()=>{});
 
-  // Auto eliminar
+  // Duración
   setTimeout(() => {
     div.classList.remove("mostrar");
-    setTimeout(() => div.remove(), 400);
-  }, 4000);
-}
-
-// Notificación del sistema (opcional)
-function notificacionSistema(texto) {
-  if (!("Notification" in window)) return;
-
-  if (Notification.permission === "granted") {
-    new Notification(texto);
-  }
+    setTimeout(() => {
+      div.remove();
+      callback(); // 👉 muestra la siguiente
+    }, 400);
+  }, 3500);
 }
 </script>
 
