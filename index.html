@@ -1567,26 +1567,81 @@ icon:"23.jpeg"
 
 }
 
-}// Cola de notificaciones
+}// ================== CONFIG ==================
 let colaNotificaciones = [];
 let mostrando = false;
+let audioActivo = false;
 
-// Espera DOM
+// Estado de sonido (guardado)
+let sonidoHabilitado = localStorage.getItem("sonidoNotif") !== "off";
+
+// ================== SONIDOS PREMIUM ==================
+const sonidos = {
+  success: new Audio("https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8630b1c68.mp3"),
+  error: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c1d9d3c1f.mp3"),
+  carrito: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3"),
+  info: new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3")
+};
+
+// Volumen estilo iPhone (suave pero claro)
+Object.values(sonidos).forEach(s => s.volume = 0.8);
+
+// ================== ACTIVAR AUDIO EN MÓVIL ==================
+document.addEventListener("click", activarAudio, { once: true });
+document.addEventListener("touchstart", activarAudio, { once: true });
+
+function activarAudio() {
+  Object.values(sonidos).forEach(s => {
+    s.play().then(() => {
+      s.pause();
+      s.currentTime = 0;
+    }).catch(()=>{});
+  });
+  audioActivo = true;
+}
+
+// ================== BOTÓN SILENCIO ==================
+function crearBotonSonido() {
+  const btn = document.createElement("button");
+  btn.id = "btnSonido";
+  btn.innerText = sonidoHabilitado ? "🔊" : "🔕";
+
+  btn.style.position = "fixed";
+  btn.style.bottom = "20px";
+  btn.style.right = "20px";
+  btn.style.zIndex = "99999";
+  btn.style.padding = "10px";
+  btn.style.borderRadius = "50%";
+  btn.style.border = "none";
+  btn.style.background = "#111";
+  btn.style.color = "#fff";
+  btn.style.fontSize = "18px";
+  btn.style.cursor = "pointer";
+
+  btn.onclick = () => {
+    sonidoHabilitado = !sonidoHabilitado;
+    localStorage.setItem("sonidoNotif", sonidoHabilitado ? "on" : "off");
+    btn.innerText = sonidoHabilitado ? "🔊" : "🔕";
+  };
+
+  document.body.appendChild(btn);
+}
+
+// ================== INICIO ==================
 document.addEventListener("DOMContentLoaded", () => {
+  crearBotonSonido();
+
   notificar("Nuevos productos disponibles", "info");
-notificar("La app sigue en mantenimiento", "error");
+  notificar("La app sigue en mantenimiento", "error");
 });
 
-// Sonido
-const sonidoNotif = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b9f3c.mp3?filename=notification-110888.mp3");
-
-// Función principal
+// ================== FUNCIÓN PRINCIPAL ==================
 function notificar(texto, tipo = "info"){
   colaNotificaciones.push({ texto, tipo });
   procesarCola();
 }
 
-// Procesa una por una
+// ================== COLA ==================
 function procesarCola(){
   if (mostrando || colaNotificaciones.length === 0) return;
 
@@ -1595,11 +1650,11 @@ function procesarCola(){
   const { texto, tipo } = colaNotificaciones.shift();
   mostrarNotificacion(texto, tipo, () => {
     mostrando = false;
-    procesarCola(); // siguiente
+    procesarCola();
   });
 }
 
-// Mostrar notificación
+// ================== MOSTRAR ==================
 function mostrarNotificacion(texto, tipo, callback) {
   const contenedor = document.getElementById("notificaciones");
   if (!contenedor) return;
@@ -1627,16 +1682,19 @@ function mostrarNotificacion(texto, tipo, callback) {
   // Vibración
   if (navigator.vibrate) navigator.vibrate(80);
 
-  // Sonido
-  sonidoNotif.currentTime = 0;
-  sonidoNotif.play().catch(()=>{});
+  // 🔊 SONIDO POR TIPO
+  if (audioActivo && sonidoHabilitado) {
+    const sonido = sonidos[tipo] || sonidos.info;
+    sonido.currentTime = 0;
+    sonido.play().catch(()=>{});
+  }
 
   // Duración
   setTimeout(() => {
     div.classList.remove("mostrar");
     setTimeout(() => {
       div.remove();
-      callback(); // 👉 muestra la siguiente
+      callback();
     }, 400);
   }, 3500);
 }
