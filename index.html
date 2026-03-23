@@ -677,12 +677,12 @@ transform:translate(-50%,0);
 
 /* 🟢 ABIERTO */
 .status.abierto{
-  background: #16a34a;
+  background: #000000;
 }
 
 /* 🔴 CERRADO */
 .status.cerrado{
-  background: #dc2626;
+  background: #000000;
 }
 
 /* 👇 efecto al pasar el mouse */
@@ -809,7 +809,32 @@ transform:translate(-50%,0);
   font-size:14px;
   outline:none;
 }
+.img-container{
+  position: relative;
+}
 
+.agotado{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  letter-spacing:2px;
+  border-radius:16px;
+}
+
+button:disabled{
+  background:#ccc !important;
+  color:#666 !important;
+  cursor:not-allowed;
+}
 /* BOTÓN */
 .btnUbicacion{
   width:100%;
@@ -825,7 +850,7 @@ transform:translate(-50%,0);
 }
 
 .btnUbicacion:hover{
-  background:#16a34a;
+  background:#000000;
 }
 </style>
 </head>
@@ -1091,7 +1116,12 @@ animation:slideUp .4s ease;">
 <script>const productos = [
   
 
-{name:"Mobil Special 20W-50 - Aceite para motor",price:1060,cat:"motor",img:"30.jpeg",desc:"Mobil Special 20W-50 es un aceite mineral de alta calidad diseñado para brindar protección confiable al motor en condiciones de trabajo exigentes. Su fórmula ayuda a reducir el desgaste y mantener el motor limpio, prolongando su vida útil."},
+{name:"Mobil Special 20W-50 - Aceite para motor",price:1060,cat:"motor",img:"30.jpeg",stock: 19, desc:"Mobil Special 20W-50 es un aceite mineral de alta calidad diseñado para brindar protección confiable al motor en condiciones de trabajo exigentes. Su fórmula ayuda a reducir el desgaste y mantener el motor limpio, prolongando su vida útil."},
+
+
+{name:`Aceite de motor 4 tiempos 10W-40 `,price:380,cat:"motor",img:"196.jpeg",desc:`Motul 5100, formulado con tecnología Ester para una óptima lubricación y protección. Ideal para motocicletas de uso diario y off-road, mejora el rendimiento del motor, facilita cambios suaves y ofrece un arranque eficiente. Presentación de 1 litro.`},
+
+
 {name:"CLEAN ALL",price:180,cat:"motor",img:"39.jpeg",desc:`Es un limpiador espumoso multiusos diseñado especialmente para la limpieza interior y exterior de vehículos. 
 Su poderosa fórmula en espuma penetra profundamente en la suciedad, ayudando a remover manchas difíciles, polvo y grasa sin dañar las superficies.
 Viene en presentación de 650 ml, ideal tanto para uso profesional en talleres y autolavados como para uso doméstico.`},
@@ -1100,7 +1130,7 @@ Viene en presentación de 650 ml, ideal tanto para uso profesional en talleres y
 {name:"Flamingo Foam Cleaner – Limpiador Espumoso Multiusos",price:150,cat:"motor",img:"44.jpeg",desc:`Limpiador espumoso multiuso para limpieza profunda del interior del vehículo.`},
 {name:"Coolzone Battery Water – Agua Desmineralizada para Batería",price:100,cat:"motor",img:"51.jpeg",desc:`Agua desmineralizada lista para usar, libre de minerales e impurezas.`},
 {name:"Agua Desmineralizada",price:80,cat:"motor",img:"52.jpeg",desc:`Agua purificada sin minerales para usos técnicos y automotrices.`},
-{name:"Swiss Drive Accordion Front Sun Shade – Parasol Delantero Plegable",price:260,cat:"motor",img:"53.jpeg",desc:`Parasol delantero reflectivo que bloquea calor y rayos UV.`},
+{name:"Swiss Drive Accordion Front Sun Shade – Parasol Delantero Plegable",price:260,stock: 0,cat:"motor",img:"53.jpeg",desc:`Parasol delantero reflectivo que bloquea calor y rayos UV.`},
 {name:"Aceite de motor 4T Yamalube 20W-50 (1L)",price:270,cat:"motor",img:"61.jpeg",desc:`Lubricante mineral de alto rendimiento para motores 4 tiempos.`},
 {name:"Havoline 2-Cycle Engine Oil TC-W3 – Chevron",price:330,cat:"motor",img:"62.jpeg",desc:`Aceite formulado para motores 2 tiempos (2T).`},
 {name:"Aceite de Motor Havoline Synblend SAE 20W-50",price:1100,cat:"motor",img:"64.jpeg",desc:`Lubricante semisintético para motores a gasolina.`},
@@ -1348,8 +1378,6 @@ Fluido para transmisiones automáticas diseñado para lubricar, enfriar y proteg
 
 {name:`Direccionales para motocicleta `,price:250,cat:"motor",img:"195.jpeg",desc:`Luz ámbar, diseñadas para brindar alta visibilidad y seguridad en la vía. Fabricadas con materiales resistentes y de fácil instalación, ideales para reemplazo o mejora del sistema de señalización. Incluyen cableado listo para conexión.`},
 
-
-{name:`Aceite de motor 4 tiempos 10W-40 `,price:380,cat:"motor",img:"196.jpeg",desc:`Motul 5100, formulado con tecnología Ester para una óptima lubricación y protección. Ideal para motocicletas de uso diario y off-road, mejora el rendimiento del motor, facilita cambios suaves y ofrece un arranque eficiente. Presentación de 1 litro.`},
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -1474,17 +1502,27 @@ function mostrarProductos(){
     (p.name.toLowerCase().includes(texto))
   )
   .forEach(p=>{
-    productGrid.innerHTML += `
-    <div class="product">
-      <img src="${p.img}" data-id="${p.indexReal}">
-      <div class="product-body">
-        <h4>${p.name}</h4>
-        <div class="price">C$${p.price}</div>
-        <button onclick="addToCart(${p.indexReal})">Agregar</button>
-      </div>
-    </div>`;
-  });
+  productGrid.innerHTML += `
+  <div class="product">
 
+    <div class="img-container">
+      <img src="${p.img}" data-id="${p.indexReal}">
+      ${p.stock === 0 ? '<div class="agotado">AGOTADO</div>' : ''}
+    </div>
+
+    <div class="product-body">
+      <h4>${p.name}</h4>
+      <div class="price">C$${p.price}</div>
+
+      <button 
+        ${p.stock === 0 ? 'disabled' : ''} 
+        onclick="addToCart(${p.indexReal})">
+        ${p.stock === 0 ? 'No disponible' : 'Agregar'}
+      </button>
+
+    </div>
+  </div>`;
+});
   document.querySelectorAll(".product img").forEach(img=>{
     img.addEventListener("click",function(){
       productoActual = productos[this.dataset.id]; // 👈 ahora sí correcto
@@ -1492,19 +1530,37 @@ function mostrarProductos(){
     });
   });
 }
-
 function verProducto(p){
   modalTitle.innerText=p.name;
   modalDesc.innerText=p.desc||"Sin descripción.";
   modalPrice.innerText="C$"+p.price;
   modalImg.src=p.img;
+
+  const btn = document.querySelector(".modalBtn");
+
+  if(p.stock === 0){
+    btn.innerText = "No disponible";
+    btn.disabled = true;
+  }else{
+    btn.innerText = "Agregar al carrito";
+    btn.disabled = false;
+  }
+
   productModal.style.display="flex";
 }
+function addToCart(index){
 
-function closeProduct(){
-  productModal.style.display="none";
+  if(productos[index].stock === 0){
+    notificar("Producto agotado ❌","error");
+    return;
+  }
+
+  cart.push(productos[index]);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  cartCount.innerText=cart.length;
+
+  notificar("Agregado al carrito 🛒","carrito");
 }
-
 /* ===================== */
 /* MODALES AUTOMÁTICOS */
 /* ===================== */
@@ -1567,6 +1623,20 @@ function guardarUbicacion(){
   // Notificación opcional
   notificar("Configuración guardada ✔️","success");
 }
+
+const traducciones = {
+  es: {
+    titulo: "Bienvenido",
+    descripcion: "Compra los mejores productos aquí",
+    btnComprar: "Comprar"
+  },
+  en: {
+    titulo: "Welcome",
+    descripcion: "Shop the best products here",
+    btnComprar: "Buy"
+  }
+};
+
 /* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
