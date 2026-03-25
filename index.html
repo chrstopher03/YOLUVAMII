@@ -637,7 +637,114 @@ transform:translate(-50%,0);
   transform: scale(1);
   opacity: 1;
 }
+/* FOOTER PRO */
+.footer-pro{
+  background: #f5f6fa;
+  color:#000000;
+  padding:50px 20px 25px;
+  margin-top:50px;
+}
 
+/* GRID */
+.footer-content{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+  max-width:1100px;
+  margin:auto;
+}
+
+/* COLUMNAS */
+.footer-col h2{
+  font-size:20px;
+  margin-bottom:10px;
+}
+
+.footer-col h3{
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.footer-col p{
+  font-size:13px;
+  opacity:.8;
+}
+
+/* LOGOS */
+.brand-logos{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.brand-logos img{
+  width:70px;
+  height:40px;
+  object-fit:contain;
+  background:#fff;
+  padding:6px;
+  border-radius:8px;
+
+  transition: all 0.3s ease;
+}
+
+/* ANIMACIÓN HOVER */
+.brand-logos img:hover{
+  transform: scale(1.1);
+  box-shadow:0 5px 15px rgba(255,255,255,0.2);
+}
+
+/* PAGOS */
+.pagos{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.pagos span{
+  background:#ffffff;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:13px;
+  transition:.3s;
+}
+
+.pagos span:hover{
+  background:#1e3a8a;
+}
+
+/* REDES */
+.footer-social{
+  text-align:center;
+  margin-top:30px;
+}
+
+.footer-social a{
+  margin:0 10px;
+  color:#cbd5e1;
+  text-decoration:none;
+  font-size:14px;
+  transition:.3s;
+}
+
+.footer-social a:hover{
+  color:#fff;
+}
+
+/* COPYRIGHT */
+.footer-copy{
+  text-align:center;
+  margin-top:15px;
+  font-size:12px;
+  opacity:.6;
+}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+  .footer-content{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
 /* EFECTO CUANDO CAMBIA */
 .status.animar{
   transform: scale(1.05);
@@ -829,7 +936,45 @@ transform:translate(-50%,0);
   letter-spacing:2px;
   border-radius:16px;
 }
+#loaderOil{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
 
+.container{
+  text-align:center;
+}
+
+.bottle{
+  width:140px;
+}
+
+/* ACEITE */
+.oilFill{
+  fill: linear-gradient(#1e3a8a, #000);
+  animation: llenar 2.5s ease-in-out forwards;
+}
+
+/* TEXTO */
+.text{
+  margin-top:10px;
+  font-size:14px;
+  color:#333;
+}
+
+/* ANIMACIÓN */
+@keyframes llenar{
+  0%{ y:300; }
+  100%{ y:90; }
+}
 button:disabled{
   background:#ccc !important;
   color:#666 !important;
@@ -856,7 +1001,60 @@ button:disabled{
 </head>
 
 <body>
+<div id="loaderOil">
+  <div class="container">
 
+    <svg viewBox="0 0 200 300" class="bottle">
+
+      <!-- FORMA DEL BOTE -->
+      <defs>
+        <clipPath id="bottleShape">
+          <path d="
+            M60 20 
+            L120 20 
+            Q135 20 135 35 
+            L135 60 
+            L150 80 
+            L150 260 
+            Q150 280 130 280 
+            L70 280 
+            Q50 280 50 260 
+            L50 80 
+            L60 60 
+            Z
+          "/>
+        </clipPath>
+      </defs>
+
+      <!-- CONTORNO -->
+      <path d="
+        M60 20 
+        L120 20 
+        Q135 20 135 35 
+        L135 60 
+        L150 80 
+        L150 260 
+        Q150 280 130 280 
+        L70 280 
+        Q50 280 50 260 
+        L50 80 
+        L60 60 
+        Z
+      " fill="none" stroke="#000" stroke-width="3"/>
+
+      <!-- AGARRADOR (HUECO) -->
+      <ellipse cx="125" cy="160" rx="15" ry="50" fill="#fff"/>
+
+      <!-- ACEITE -->
+      <rect class="oilFill" x="0" y="300" width="200" height="300"
+        clip-path="url(#bottleShape)"/>
+
+    </svg>
+
+    <p class="text">Cargando productos...</p>
+
+  </div>
+</div>
 <div id="statusElement" class="status"></div>
 <div class="hero">
 <img src="23.jpeg">
@@ -1120,6 +1318,9 @@ animation:slideUp .4s ease;">
 
 
 {name:`Aceite de motor 4 tiempos 10W-40 `,price:380,cat:"motor",img:"196.jpeg",desc:`Motul 5100, formulado con tecnología Ester para una óptima lubricación y protección. Ideal para motocicletas de uso diario y off-road, mejora el rendimiento del motor, facilita cambios suaves y ofrece un arranque eficiente. Presentación de 1 litro.`},
+,
+
+
 
 {name:"Havoline Synblend SAE 20W-50 Motor Oil (1 Quart)",price:300,cat:"motor",img:"159.jpeg",desc:`Aceite de motor semisintético diseñado para motores a gasolina, que brinda excelente protección contra el desgaste y altas temperaturas. Su fórmula ayuda a mantener el motor limpio, mejora el rendimiento y prolonga la vida útil del motor. Cumple con la especificación API SQ y es ideal para un desempeño confiable en el uso diario.`},
 {name:"Motul 5100 4T 20W-50",price:380,cat:"motor",img:"160.jpeg",desc:`Aceite de motor para motocicletas de 4 tiempos, formulado con tecnología Technosynthese®️ y Ester que brinda buena protección, funcionamiento suave y rendimiento confiable en uso diario o recorridos largos.
@@ -1483,9 +1684,7 @@ Fluido para transmisiones automáticas diseñado para lubricar, enfriar y proteg
 {name:`Porta Placa Metálico Universal`,price:550,cat:"motor",img:"183.jpeg",desc:`Marco porta placa fabricado en metal 100% hierro, resistente y duradero. Se adapta a todas las placas estándar, brindando una sujeción firme y segura. Ideal para proteger y dar un acabado elegante y deportivo a tu vehículo. Perfecto para uso. 550 el par
 
 
-`},
-
-
+`}
 
 ];
 
@@ -1757,7 +1956,14 @@ const traducciones = {
     btnComprar: "Buy"
   }
 };
-
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const loader = document.getElementById("loaderOil");
+    loader.style.opacity = "0";
+    loader.style.transition = "0.5s";
+    setTimeout(()=> loader.style.display="none", 500);
+  }, 2500);
+});
 /* ===================== */
 /* HORARIO NICARAGUA */
 /* ===================== */
@@ -2068,6 +2274,59 @@ function mostrarNotificacion(texto, tipo, callback) {
   }, 3500);
 }
 </script>
+<footer class="footer-pro">
 
+  <div class="footer-content">
+
+    <!-- INFO -->
+    <div class="footer-col">
+      <h2>YOLUVAMI</h2>
+      <p>Lubricantes, aceites y grasas de alta calidad en Nicaragua 🇳🇮</p>
+    </div>
+
+    <!-- MARCAS CON LOGOS -->
+    <div class="footer-col">
+      <h3>Marcas</h3>
+      <div class="brand-logos">
+        <img src="301.jpeg">
+        <img src="302.jpeg">
+        <img src="303.jpeg">
+        <img src="304.jpeg">
+        <img src="305.jpeg">
+      </div>
+    </div>
+
+    <!-- PAGOS -->
+    <div class="footer-col">
+      <h3>Métodos de pago</h3>
+      <div class="pagos">
+        <span>💳 BAC</span>
+        <span>💵 Efectivo</span>
+        <span>📲 Transferencia</span>
+      </div>
+    </div>
+
+    <!-- CONTACTO -->
+    <div class="footer-col">
+      <h3>Contacto</h3>
+      <p>📍 Somoto, Madriz</p>
+      <p>+505 8332 0030</p>
+      <p>Delivery disponible</p>
+    </div>
+
+  </div>
+
+  <!-- REDES -->
+  <div class="footer-social">
+    <a href="https://www.tiktok.com/@yoluvami_autopart" target="_blank">TikTok</a>
+    <a href="https://www.instagram.com/yoluvami_autoparts" target="_blank">Instagram</a>
+  </div>
+
+  <!-- COPYRIGHT -->
+  <div class="footer-copy">
+    © 2026 YOLUVAMI · Todos los derechos reservados
+  </div>
+
+</footer>
 </body>
 </html>
