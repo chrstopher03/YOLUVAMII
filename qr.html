@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>QR Productos</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+body{
+  font-family: Arial;
+  padding:20px;
+  background:#f5f5f5;
+}
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+  gap:20px;
+}
+.card{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+</style>
+</head>
+
+<body>
+
+<h2>📦 QR de Productos</h2>
+
+<div class="grid" id="listaQR"></div>
+
+<script>
+
+const productos = [
+{id:"P001",name:"Mobil Special 20W-50"},
+{id:"P002",name:"CLEAN ALL"},
+{id:"P003",name:"Freezetone Additiv"},
+{id:"P004",name:"Refrigerante Rojo"},
+{id:"P005",name:"Foam Cleaner"}
+];
+
+const contenedor = document.getElementById("listaQR");
+
+productos.forEach(p => {
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    const canvas = document.createElement("canvas");
+
+    QRCode.toCanvas(canvas, p.id);
+
+    div.innerHTML += `<h4>${p.name}</h4>`;
+    div.appendChild(canvas);
+
+    contenedor.appendChild(div);
+
+});
+
+</script>
+
+</body>
+</html>

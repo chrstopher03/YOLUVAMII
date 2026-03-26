@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <style>
 body{margin:0;font-family:Poppins;background:#f3f4f6}
 header{background:#000000;color:white;padding:18px;text-align:center;font-size:18px;font-weight:700}
@@ -122,6 +123,9 @@ Usuario: <span id="usuarioActivo"></span>
 
 <div class="card">
 <h3>Registrar Venta</h3>
+<h4>📷 Escanear QR</h4>
+<button onclick="iniciarScanner()">Escanear Producto</button>
+<div id="reader" style="width:100%;max-width:300px;margin:auto;margin-top:10px;"></div>
 <input type="text" id="buscador" placeholder="Buscar producto...">
 <select id="productoSelect"></select>
 <img id="imgPreview" class="preview">
@@ -134,16 +138,15 @@ Usuario: <span id="usuarioActivo"></span>
 <tbody id="tablaVenta"></tbody>
 </table>
 <div class="totalVentaBox">Total: C$<span id="totalVenta">0</span></div>
-<button onclick="finalizarVenta()">Finalizar Venta</button>
-</div>
-<h3>💳 Deudas</h3>
 
 <select id="tipoPago">
-<option value="contado">Contado</option>
-<option value="fiado">Fiado</option>
+  <option value="efectivo">Efectivo</option>
+  <option value="transferencia">Transferencia</option>
+  <option value="fiado">Fiado</option>
 </select>
 
-<div id="listaDeudas"></div>
+<button onclick="finalizarVenta()">Finalizar Venta</button>
+</div>
 <!-- PANEL AGREGAR STOCK -->
 <div class="card">
 <h3>💡 Agregar Stock</h3>
@@ -152,15 +155,24 @@ Usuario: <span id="usuarioActivo"></span>
 <button onclick="agregarStock()">Actualizar Stock</button>
 </div>
 
+<h3>💳 Deudas</h3>
+
+
+<div id="listaDeudas"></div>
+
+
 <div class="card">
 <h3>Historial del Día</h3>
 <div id="historial"></div>
 </div>
-
+<input type="date" id="filtroFecha">
+<button onclick="filtrarPorFecha()">Filtrar</button>
+<button onclick="mostrarHistorial()">Ver todo</button>
 <div class="card">
 <h3>Resumen General</h3>
 <div id="resumen"></div>
 </div>
+
 <button onclick="corteCaja()">📊 Corte de Caja</button>
 <div class="card">
 <h3>⚠ Productos Agotados</h3>
@@ -198,6 +210,7 @@ let usuariosSistema = JSON.parse(localStorage.getItem("usuariosYoluvami")) || [
 {user:"michelle",pass:"yomara7412",rol:"jefa"},
 {user:"auner",pass:"1234",rol:"trabajador"},
 {user:"luis",pass:"1234",rol:"trabajador"}
+
 ];
 function mostrarRecuperar(){
 document.getElementById("recuperarBox").style.display="block";
@@ -228,8 +241,8 @@ function logout(){localStorage.removeItem("usuarioActivo");location.reload()}
 
 /* PRODUCTOS */
 const productosBase=[
-{name:"Mobil Special 20W-50",price:1060,img:"30.jpeg",stock:16},
-{name:"CLEAN ALL",price:180,img:"39.jpeg",stock:5},
+{id:"P001",name:"Mobil Special 20W-50",price:1060,img:"30.jpeg",stock:16},
+{ id: "P002",name:"CLEAN ALL",price:180,img:"39.jpeg",stock:5},
 {name:"Freezetone - Engine Radiator Additiv",price:230,img:"40.jpeg",stock:8},
 {name:"Freezetone – Refrigerante Rojo Long Life",price:150,img:"41.jpeg",stock:3},
 {name:"Flamingo Foam Cleaner – Limpiador Espumoso Multiusos",price:280,img:"44.jpeg",stock:6},
@@ -435,6 +448,7 @@ const productosBase=[
 
 
 {name:`Aceite de motor 4 tiempos 10W-40 `,price:380,img:"196.jpeg",stock:4},
+
 ]
 let productos = JSON.parse(localStorage.getItem("stockYoluvami")) || productosBase
 let ventaActual=[]
@@ -483,63 +497,148 @@ function eliminar(i){ventaActual.splice(i,1);actualizarTabla()}
 /* ==================== FINALIZAR VENTA ==================== */
 function finalizarVenta(){
 
-if(ventaActual.length===0){
-alerta("No hay productos","#dc2626");
-return
-}
+    if(ventaActual.length === 0){
+        alerta("No hay productos","#dc2626");
+        return;
+    }
 
-const fecha=new Date()
-const total=ventaActual.reduce((acc,p)=>acc+p.subtotal,0)
+    const fecha = new Date();
+    const total = ventaActual.reduce((acc,p)=>acc + (p.subtotal || 0), 0);
 
-const tipoPago = document.getElementById("tipoPago").value;
+    const tipoPago = document.getElementById("tipoPago").value;
 
-const venta = {
-fecha:fecha.toLocaleDateString(),
-hora:fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
-vendedor: usuarioActual.user,
-productos: JSON.parse(JSON.stringify(ventaActual)),
-total,
-tipoPago
-}
+    let detallePago = "";
 
-// ==================== FIADO ====================
-if(tipoPago === "fiado"){
+    // 💵 EFECTIVO
+    if(tipoPago === "efectivo"){
+        let recibido = parseFloat(prompt("Monto recibido: C$"));
 
-    pedirDatosFiado((nombreCliente, fechaPago)=>{
+        if(isNaN(recibido) || recibido < total){
+            alerta("Monto insuficiente","#dc2626");
+            return;
+        }
 
-        deudas.push({
-            cliente: nombreCliente,
-            total: total,
-            fecha: venta.fecha,
-            fechaPago: fechaPago,
-            productos: JSON.parse(JSON.stringify(ventaActual))
+        let cambio = recibido - total;
+        alerta("Cambio: C$" + cambio, "#16a34a");
+
+        detallePago = `Efectivo - Recibido: ${recibido} Cambio: ${cambio}`;
+    }
+
+    // 🏦 TRANSFERENCIA
+    else if(tipoPago === "transferencia"){
+        detallePago = "Transferencia";
+    }
+
+    // 🔀 MIXTO
+    else if(tipoPago === "mixto"){
+        let efectivo = parseFloat(prompt("Efectivo:"));
+        let transferencia = parseFloat(prompt("Transferencia:"));
+
+        if(isNaN(efectivo) || isNaN(transferencia) || (efectivo + transferencia) < total){
+            alerta("Monto incompleto","#dc2626");
+            return;
+        }
+
+        detallePago = `Mixto - Efectivo:${efectivo} Transferencia:${transferencia}`;
+    }
+
+    // ==================== FIADO ====================
+    if(tipoPago === "fiado"){
+
+        pedirDatosFiado((nombreCliente, fechaPago)=>{
+
+            deudas.push({
+                cliente: nombreCliente,
+                total: total,
+                fecha: fecha.toLocaleDateString(),
+                fechaPago: fechaPago,
+                productos: JSON.parse(JSON.stringify(ventaActual))
+            });
+
+            localStorage.setItem("deudasYoluvami", JSON.stringify(deudas));
+
+            alerta("Venta FIADA guardada 📅","#f59e0b");
+
+            ventaActual = [];
+            actualizarTabla();
+            mostrarDeudas();
         });
 
-        localStorage.setItem("deudasYoluvami", JSON.stringify(deudas));
+        return; // 🔴 IMPORTANTE: evita que también guarde en historial
+    }
 
-        alerta("Venta FIADA guardada 📅","#f59e0b")
+    // ==================== GUARDAR VENTA NORMAL ====================
+    historial.push({
+        fecha: fecha.toLocaleDateString(),
+        hora: fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+        vendedor: usuarioActual?.user || "Desconocido",
+        productos: JSON.parse(JSON.stringify(ventaActual)),
+        total,
+        tipoPago,
+        detallePago
+    });
 
-        ventaActual=[]
-        actualizarTabla()
-        mostrarDeudas()
+    localStorage.setItem("ventasYoluvami", JSON.stringify(historial));
 
-    })
+    alerta("Venta realizada ✅","#16a34a");
 
-}else{
-
-    historial.push(venta)
-
-    localStorage.setItem("ventasYoluvami",JSON.stringify(historial))
-
-    alerta("Venta realizada ✅","#16a34a")
-
-    ventaActual=[]
-    actualizarTabla()
-    mostrarHistorial()
+    ventaActual = [];
+    actualizarTabla();
+    mostrarHistorial();
 }
+function iniciarScanner(){
+
+    const reader = new Html5Qrcode("reader");
+
+    reader.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+
+        (codigo) => {
+
+            // 🔥 BUSCAR PRODUCTO POR ID
+            let producto = productos.find(p => p.id === codigo);
+
+            if(producto){
+
+                if(producto.stock <= 0){
+                    alerta("❌ Sin stock","#dc2626");
+                    reader.stop();
+                    return;
+                }
+
+                // 🔁 SI YA EXISTE EN LA VENTA
+                let existente = ventaActual.find(v => v.name === producto.name);
+
+                if(existente){
+                    existente.cantidad++;
+                    existente.subtotal += producto.price;
+                }else{
+                    ventaActual.push({
+                        name: producto.name,
+                        price: producto.price,
+                        img: producto.img,
+                        cantidad: 1,
+                        subtotal: producto.price
+                    });
+                }
+
+                producto.stock--;
+                guardarStock();
+
+                actualizarTabla();
+
+                alerta("Producto agregado 🛒","#16a34a");
+
+            }else{
+                alerta("Producto no encontrado","#dc2626");
+            }
+
+            reader.stop(); // evita doble escaneo
+        },
+        (error) => {}
+    );
 }
-
-
 /* ==================== MODAL BONITO CON FECHA ==================== */
 function pedirDatosFiado(onConfirm){
 const modal=document.createElement("div");
@@ -660,6 +759,7 @@ Cancelado
 `
 });
 }
+
 /* ==================== PAGAR DEUDA ==================== */
 function pagarDeuda(index){
 mostrarConfirmacion("¿Marcar como cancelado?",()=>{
@@ -691,7 +791,9 @@ function mostrarHistorial(){
 const div=document.getElementById("historial");if(!div)return;div.innerHTML="";let ingresos=0
 historial.forEach((v,index)=>{ingresos+=v.total;let productosHTML=""
 v.productos.forEach(p=>{productosHTML+=`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><img src="${p.img}" style="width:35px;border-radius:8px"><div style="font-size:13px">${p.name} x${p.cantidad}</div><div style="margin-left:auto;font-weight:600">C$${p.subtotal}</div></div>`})
-div.innerHTML+=`<div style="background:#f9fafc;padding:15px;border-radius:12px;margin-bottom:12px"><div style="font-weight:600;margin-bottom:8px">${v.fecha} - ${v.hora}</div>${productosHTML}<div style="margin-top:8px;font-weight:700;color:#059669">Total: C$${v.total}</div><button class="deleteBtn" onclick="borrarRegistro(${index})">Eliminar</button></div>`})
+div.innerHTML+=`<div style="background:#f9fafc;padding:15px;border-radius:12px;margin-bottom:12px"><div style="font-weight:600;margin-bottom:8px">${v.fecha} - ${v.hora}</div>${productosHTML}<div style="margin-top:8px;font-weight:700;color:#059669">Total: C$${v.total}</div>${usuarioActual && usuarioActual.rol === "jefa" 
+? `<button class="deleteBtn" onclick="borrarRegistro(${index})">Eliminar</button>` 
+: ""}</div>`})
 document.getElementById("resumen").innerHTML=`<p><strong>Total Ingresos:</strong> C$${ingresos}</p><canvas id="grafica"></canvas><button onclick="exportarExcel()">Descargar Excel</button><button onclick="generarPDF()">Descargar PDF</button><button onclick="enviarWhatsApp()">Enviar WhatsApp</button>`
 crearGrafica()
 }
@@ -723,15 +825,19 @@ function agregarStock() {
     guardarStock();
     document.getElementById("cantidadStock").value = "";
     alerta("Stock actualizado", "#16a34a");
-}
-function borrarRegistro(index) {
+}function borrarRegistro(index) {
+
+    if (!usuarioActual || usuarioActual.rol !== "jefa") {
+        alerta("⛔ No tienes permisos para eliminar registros", "#dc2626");
+        return;
+    }
+
     mostrarConfirmacion("¿Eliminar este registro?", () => {
         historial.splice(index, 1);
         localStorage.setItem("ventasYoluvami", JSON.stringify(historial));
         mostrarHistorial();
     });
 }
-
 // Función mínima para mostrar confirmación bonita
 function mostrarConfirmacion(mensaje, onConfirm) {
     const modal = document.createElement("div");
@@ -863,8 +969,43 @@ async function generarPDF() {
     doc.text("YOLUVAMI", 40, y, { align: "center" });
 
     doc.save(`Ticket_${numeroFactura}.pdf`);
-}
+}function filtrarPorFecha(){
+    const fechaSeleccionada = document.getElementById("filtroFecha").value;
 
+    if(!fechaSeleccionada){
+        alerta("Selecciona una fecha","#dc2626");
+        return;
+    }
+
+    let filtrado = historial.filter(v => {
+
+        // 🟢 SI YA ESTÁ EN FORMATO CORRECTO
+        if(v.fecha.includes("-")){
+            return v.fecha === fechaSeleccionada;
+        }
+
+        // 🔴 SI ESTÁ EN FORMATO 25/3/2026
+        if(v.fecha.includes("/")){
+            let partes = v.fecha.split("/");
+
+            let dia = partes[0].padStart(2,"0");
+            let mes = partes[1].padStart(2,"0");
+            let año = partes[2];
+
+            let fechaConvertida = `${año}-${mes}-${dia}`;
+
+            return fechaConvertida === fechaSeleccionada;
+        }
+
+        return false;
+    });
+
+    if(filtrado.length === 0){
+        alerta("No hay ventas en esa fecha","#f59e0b");
+    }
+
+    mostrarHistorialFiltrado(filtrado);
+}
 /* ==================== CONVERTIR IMAGEN A BASE64 ==================== */
 function cargarImagenBase64(url) {
     return new Promise((resolve, reject) => {
