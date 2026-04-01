@@ -2,52 +2,159 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QR Productos</title>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+
 <style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
 body{
-  font-family: Arial;
-  padding:20px;
-  background:#f5f5f5;
+  background:#ffffff;
+  color:#111;
 }
-.grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
-  gap:20px;
-}
-.card{
-  background:white;
-  padding:15px;
-  border-radius:12px;
+
+/* HEADER */
+.header{
+  padding:25px 15px 15px;
   text-align:center;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-  transition:0.3s;
+  border-bottom:1px solid #eee;
 }
-.card:hover{
-  transform:translateY(-5px);
+
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:26px;
+  letter-spacing:2px;
 }
-button{
-  margin-top:10px;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  background:#000;
-  color:white;
-  cursor:pointer;
-}
-small{
-  display:block;
+
+.sub{
+  font-size:12px;
+  color:#777;
   margin-top:5px;
-  color:#555;
+}
+
+.line{
+  width:40px;
+  height:2px;
+  background:#000;
+  margin:10px auto 0;
+}
+
+/* BUSCADOR */
+.search{
+  padding:12px 15px;
+}
+
+.search input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+
+/* GRID */
+.grid{
+  padding:15px;
+  display:grid;
+  grid-template-columns:1fr; /* 📱 móvil */
+  gap:15px;
+}
+
+/* TABLET */
+@media(min-width:600px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+/* PC */
+@media(min-width:900px){
+  .grid{
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  }
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:15px;
+  text-align:center;
+  border:1px solid #eee;
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+/* TEXTO */
+.card h4{
+  font-size:14px;
+  font-weight:500;
+}
+
+.card small{
+  display:block;
+  color:#888;
+  font-size:11px;
+}
+
+/* QR */
+canvas{
+  width:100% !important;
+  max-width:160px;
+  margin:12px auto;
+  padding:6px;
+  border-radius:10px;
+  border:1px solid #eee;
+}
+
+/* BOTON */
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#000;
+  color:#fff;
+  font-weight:500;
+  font-size:14px;
+}
+
+/* ANIMACION */
+.card{
+  animation:fade .4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<h2>📦 QR de Productos</h2>
+<div class="header">
+  <div class="logo">Yoluvami</div>
+  <div class="sub">QR de productos</div>
+  <div class="line"></div>
+</div>
+
+<div class="search">
+  <input type="text" id="buscador" placeholder="Buscar producto...">
+</div>
 
 <div class="grid" id="listaQR"></div>
 
@@ -58,50 +165,129 @@ const productos = [
 {id:"P002",name:"CLEAN ALL"},
 {id:"P003",name:"Freezetone Additiv"},
 {id:"P004",name:"Refrigerante Rojo"},
-{id:"P005",name:"Foam Cleaner"}
+{id:"P005",name:"Foam Cleaner"},
+{id: "P006",name:"Coolzone Battery Water – Agua Desmineralizada para Batería"},
+{id: "P007",name:"Agua Desmineralizada"},
+{id: "P008",name:"Swiss Drive Accordion Front Sun Shade – Parasol Delantero Plegable"},
+{id: "P009",name:"Aceite de motor 4T Yamalube 20W-50 (1L)"},
+{id: "P010",name:"Havoline 2-Cycle Engine Oil TC-W3 – Chevron"},
+{id: "P011",name:"Aceite de Motor Havoline Synblend SAE 20W-50"},
+{id: "P012",name:"Raloy Transmisión Extrema Presión SAE 80W-90 API GL-5"},
+{id: "P013",name:"Shell Advance AX5 20W-50 4T"},
+{id: "P014",name:"Mobil Delvac 1300 Super 10W-30"},
+{id: "P015",name:"Shell Helix HX5 20W-50"},
+{id: "P016",name:"Auto Super Heavy Duty Power Brake DOT 3 (Tapa Azul)"},
+{id: "P017",name:"Tapa de Radiador 0.9"},
+{id: "P018",name:"Letrero de Taxi con Imán"},
+{id: "P019",name:"Letrero Luminoso de Taxi LED con Imán"},
+{id: "P020",name:"Soporte Lumbar Ergonómico para Asiento"},
+{id: "P021",name:"Cojín de Asiento con Bolas de Madera"},
+{id: "P022",name:"Forro para Timón SWISS DRIVE – Talla L"},
+{id: "P023",name:"Forro para Timón SWISS DRIVE"},
+{id: "P024",name:"Forro para Timón SWISS DRIV"},
+{id: "P025",name:"Forro para Timón Universal Bicolor"},
+{id: "P026",name:"Escobillas Limpiaparabrisas numeraciones disponibles"},
+{id: "P027",name:"Forro para Timón SWISS DRIVE – Talla MV"},
+{id: "P028",name:"Escobillas de 20” pulgadas"},
+{id: "P029",name:"Tapetes Universales Checker Plate – 4 Piezas"},
+{id: "P030",name:"Aceite de motor Mobil Special 20W-50 Presentación de 946ml"},
+{id: "P031",name:"Aceite para motocicleta Mobil Super Moto 4T 20W-50"},
+{id: "P032",name:"Ambientador automotriz Meguiar's Whole Car Air Re-Fresher"},
+{id: "P033",name:"Paño de Microfibra Multiusos"},
+{id: "P034",name:"Flamingo Rubbing Compound"},
+{id: "P035",name:"Grasa de Alta Temperatura #2"},
+{id: "P036",name:"Aceite para Moto Bajaj DTS-i 20W50 presentación:1.2"},
+{id: "P037",name:"WD-40 Producto Multiusos"},
+{id: "P038",name:"chispero de cobre Autolite 3924"},
+{id: "P039",name:"Emblema / Logo Frontal Toyota Cromado"},
+{id: "P040",name:"Batería América Racing NS40ZL"},
+{id: "P041",name:"Luz LED Decorativa para Vehículo (Calavera)"},
+{id: "P042",name:"Luz LED Decorativa para Vehículo (Calavera)"},
+{id: "P043",name:"Porta Placa Deportivo XT Racing"},
+{id: "P044",name:"Gata Mecánico para Vehículo (2 Toneladas)"},
+{id: "P045",name:"Porta Placa Deportivo XT Racing"},
+{id: "P046",name:"Protector de Manigueta / Pedal PROTAPER"},
+{id: "P047",name:"Limpiador Electrónico de Secado Rápido Johnsen’s"},
+{id: "P048",name:"Luz LED Decorativa para Vehículo (Calavera)"},
+{id: "P049",name:"Extintor de Incendios Swiss Drive 1 Kg"},
+{id: "P050",name:"Meguiar’s Detailer Shampoo Plus"},
+{id: "P051",name:"Grasa Blanca de Litio MANNOL 8121"},
+{id: "P052",name:"Cables de Arranque Profesional 10FT – 6 Gauge (400 AMP)"},
+{id: "P053",name:"Limpiador de inyectores Liqui Moly Injection Reiniger"},
+{id: "P054",name:"Espuma extintora portátil"},
+{id: "P055",name:"Aromatizante para Auto Air Freshener – Vent Clips"},
+{id: "P056",name:"Aromatizante para auto Little Trees Fiber Can – Cherry Blast"},
+{id: "P057",name:"Soporte Universal para Smartphone SWISS DRIVE"},
+{id: "P058",name:"Esponjas aplicadoras de cera o pulido Meguiar’s"},
+{id: "P059",name:"Aromatizante en spray para auto Little Trees New Car Scent"},
+{id: "P060",name:"ATF Type A – Master Lube"},
+{id: "P061",name:"Grasa Golden Oil Litio EP-2 (500 g)"},
+{id: "P062",name:"Silicón Mega Grey"},
+{id: "P063",name:"Buje / Goma de Amortiguador"},
+{id: "P064",name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L"},
+
+
 ];
 
 const contenedor = document.getElementById("listaQR");
+const buscador = document.getElementById("buscador");
 
-productos.forEach(p => {
+function mostrarProductos(lista){
 
-    const div = document.createElement("div");
-    div.className = "card";
+    contenedor.innerHTML = "";
 
-    const canvas = document.createElement("canvas");
+    lista.forEach(p => {
 
-    // 🔥 QR PRO (compatible con tu sistema)
-    const url = `https://chrstopher03.github.io/comercial/producto.html?id=${p.id}`;
+        const div = document.createElement("div");
+        div.className = "card";
 
-    QRCode.toCanvas(canvas, url, {
-        width: 180,
-        margin: 2,
-        errorCorrectionLevel: 'H' // 🔥 mejor lectura
-    }, function (error) {
-        if (error) console.error(error);
+        const canvas = document.createElement("canvas");
+
+        const url = `https://chrstopher03.github.io/comercial/producto.html?id=${p.id}`;
+
+        QRCode.toCanvas(canvas, url, {
+            width: 160,
+            margin: 2,
+            errorCorrectionLevel: 'H'
+        });
+
+        const btn = document.createElement("button");
+        btn.innerText = "Descargar QR";
+        btn.onclick = () => {
+            const link = document.createElement("a");
+            link.download = `${p.id}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+
+        div.innerHTML = `
+            <h4>${p.name}</h4>
+            <small>${p.id}</small>
+        `;
+
+        div.appendChild(canvas);
+        div.appendChild(btn);
+
+        contenedor.appendChild(div);
+
     });
 
-    // 🔽 Descargar QR
-    const btn = document.createElement("button");
-    btn.innerText = "Descargar QR";
-    btn.onclick = () => {
-        const link = document.createElement("a");
-        link.download = `${p.id}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-    };
+}
 
-    div.innerHTML = `
-        <h4>${p.name}</h4>
-        <small>Código: ${p.id}</small>
-    `;
+// BUSCADOR
+buscador.addEventListener("input", e => {
+    const texto = e.target.value.toLowerCase();
 
-    div.appendChild(canvas);
-    div.appendChild(btn);
+    const filtrados = productos.filter(p =>
+        p.name.toLowerCase().includes(texto) ||
+        p.id.toLowerCase().includes(texto)
+    );
 
-    contenedor.appendChild(div);
-
+    mostrarProductos(filtrados);
 });
+
+// INICIAL
+mostrarProductos(productos);
 
 </script>
 
