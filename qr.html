@@ -23,6 +23,24 @@ body{
   border-radius:12px;
   text-align:center;
   box-shadow:0 4px 10px rgba(0,0,0,.1);
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-5px);
+}
+button{
+  margin-top:10px;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:#000;
+  color:white;
+  cursor:pointer;
+}
+small{
+  display:block;
+  margin-top:5px;
+  color:#555;
 }
 </style>
 </head>
@@ -52,10 +70,34 @@ productos.forEach(p => {
 
     const canvas = document.createElement("canvas");
 
-    QRCode.toCanvas(canvas, p.id);
+    // 🔥 QR PRO (compatible con tu sistema)
+    const url = `https://chrstopher03.github.io/comercial/producto.html?id=${p.id}`;
 
-    div.innerHTML += `<h4>${p.name}</h4>`;
+    QRCode.toCanvas(canvas, url, {
+        width: 180,
+        margin: 2,
+        errorCorrectionLevel: 'H' // 🔥 mejor lectura
+    }, function (error) {
+        if (error) console.error(error);
+    });
+
+    // 🔽 Descargar QR
+    const btn = document.createElement("button");
+    btn.innerText = "Descargar QR";
+    btn.onclick = () => {
+        const link = document.createElement("a");
+        link.download = `${p.id}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    };
+
+    div.innerHTML = `
+        <h4>${p.name}</h4>
+        <small>Código: ${p.id}</small>
+    `;
+
     div.appendChild(canvas);
+    div.appendChild(btn);
 
     contenedor.appendChild(div);
 

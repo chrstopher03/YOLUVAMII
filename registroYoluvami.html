@@ -247,6 +247,8 @@ const productosBase=[
 {id: "P004",name:"Freezetone – Refrigerante Rojo Long Life",price:150,img:"41.jpeg",stock:3},
 {id: "P005",name:"Flamingo Foam Cleaner – Limpiador Espumoso Multiusos",price:280,img:"44.jpeg",stock:6},
 {name:"Coolzone Battery Water – Agua Desmineralizada para Batería",price:600,img:"51.jpeg",stock:4},
+
+
 {name:"Agua Desmineralizada",price:450,img:"52.jpeg",stock:7},
 {name:"Swiss Drive Accordion Front Sun Shade – Parasol Delantero Plegable",price:1060,img:"53.jpeg",stock:16},
 {name:"Aceite de motor 4T Yamalube 20W-50 (1L)",price:180,img:"61.jpeg",stock:5},
@@ -446,7 +448,6 @@ const productosBase=[
 
 {name:`Direccionales para motocicleta `,price:250,img:"195.jpeg",stock:4},
 
-
 {name:`Aceite de motor 4 tiempos 10W-40 `,price:380,img:"196.jpeg",stock:4},
 
 ]
@@ -585,8 +586,7 @@ function finalizarVenta(){
     ventaActual = [];
     actualizarTabla();
     mostrarHistorial();
-}
-function iniciarScanner(){
+}function iniciarScanner(){
 
     const reader = new Html5Qrcode("reader");
 
@@ -596,8 +596,23 @@ function iniciarScanner(){
 
         (codigo) => {
 
-            // 🔥 BUSCAR PRODUCTO POR ID
-            let producto = productos.find(p => p.id === codigo);
+            let id = codigo;
+
+            // 🔥 SI ES URL → extraer ID
+            if(codigo.includes("id=")){
+                try{
+                    let partes = codigo.split("id=");
+                    id = partes[1].split("&")[0];
+                }catch(e){
+                    console.error("Error leyendo QR:", e);
+                }
+            }
+
+            // 🔥 LIMPIAR ESPACIOS (por si acaso)
+            id = id.trim();
+
+            // 🔍 BUSCAR PRODUCTO
+            let producto = productos.find(p => p.id === id);
 
             if(producto){
 
@@ -634,9 +649,12 @@ function iniciarScanner(){
                 alerta("Producto no encontrado","#dc2626");
             }
 
-            reader.stop(); // evita doble escaneo
+            reader.stop(); // 🛑 evita múltiples lecturas
         },
-        (error) => {}
+
+        (error) => {
+            // silencioso para no saturar consola
+        }
     );
 }
 /* ==================== MODAL BONITO CON FECHA ==================== */
