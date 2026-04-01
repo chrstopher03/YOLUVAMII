@@ -501,8 +501,7 @@ function finalizarVenta(){
 { fps: 20, qrbox: { width: 280, height: 280 } },
         (codigo) => {
 
-            let id = codigo;
-
+let id = codigo.trim().toUpperCase();
             // 🔥 SI ES URL → extraer ID
             if(codigo.includes("id=")){
                 try{
@@ -517,8 +516,9 @@ function finalizarVenta(){
             id = id.trim();
 
             // 🔍 BUSCAR PRODUCTO
-            let producto = productos.find(p => p.id === id);
-
+let producto = productos.find(p => p.id.toUpperCase() === id);
+console.log("QR leído:", codigo);
+console.log("ID procesado:", id);
             if(producto){
 
                 if(producto.stock <= 0){
