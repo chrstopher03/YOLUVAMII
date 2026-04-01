@@ -224,7 +224,7 @@ const productos = [
 {id: "P061",name:"Grasa Golden Oil Litio EP-2 (500 g)"},
 {id: "P062",name:"Silicón Mega Grey"},
 {id: "P063",name:"Buje / Goma de Amortiguador"},
-{id: "P064",name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L"},
+{id: "P064",name:"Aceite Raloy 4T Moto Mineral SAE 20W-50 – 1L",price:190,img:"134.jpeg",stock:4},
 
 
 ];
@@ -243,8 +243,7 @@ function mostrarProductos(lista){
 
         const canvas = document.createElement("canvas");
 
-        const url = `https://chrstopher03.github.io/comercial/producto.html?id=${p.id}`;
-
+const url = p.id;
         QRCode.toCanvas(canvas, url, {
             width: 160,
             margin: 2,
