@@ -83,6 +83,48 @@ body{
   }
 }
 
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.bottomNav .navItem {
+  text-decoration: none;
+  color: #cbd5e1;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  transition: 0.3s;
+}
+.bottomNav .navItem.active,
+.bottomNav .navItem:hover {
+  color: #fff;
+}
+.bottomNav .navItem .icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom: 2px;
+}
+
+.icon{
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom:4px;
+}
 /* CARD */
 .card{
   background:#fff;
@@ -158,6 +200,29 @@ button{
 
 <div class="grid" id="listaQR"></div>
 
+<nav class="bottomNav">
+  <a href="index.html" class="navItem active">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 12l9-9 9 9v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/>
+    </svg>
+    <small>Inicio</small>
+  </a>
+
+  <a href="qr.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <!-- Ícono estilo QR -->
+      <path d="M3 3h6v6H3V3zm12 0h6v6h-6V3zM3 15h6v6H3v-6zm12 4h2v2h-2v-2zm4-4h2v2h-2v-2zm-4-4h6v2h-6v-2z"/>
+    </svg>
+    <small>QR</small>
+  </a>
+
+  <a href="registroYoluvami.html" class="navItem">
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h12v2H3v-2zm0 4h8v2H3v-2z"/>
+    </svg>
+    <small>Ventas</small>
+  </a>
+</nav>
 <script>
 
 const productos = [
