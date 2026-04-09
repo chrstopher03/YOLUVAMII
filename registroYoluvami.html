@@ -243,6 +243,8 @@ function logout(){localStorage.removeItem("usuarioActivo");location.reload()}
 /* PRODUCTOS */
 const productosBase=[
 {id:"P001",name:"Mobil Special 20W-50",price:1060,img:"30.jpeg",stock:16},
+
+
 { id: "P002",name:"CLEAN ALL",price:180,img:"39.jpeg",stock:5},
 {id: "P003",name:"Freezetone - Engine Radiator Additiv",price:230,img:"40.jpeg",stock:8},
 {id: "P004",name:"Freezetone – Refrigerante Rojo Long Life",price:150,img:"41.jpeg",stock:3},
@@ -282,6 +284,7 @@ const productosBase=[
 {id: "P038",name:"chispero de cobre Autolite 3924",price:230,img:"010.jpeg",stock:8},
 {id: "P039",name:"Emblema / Logo Frontal Toyota Cromado",price:150,img:"011.jpeg",stock:3},
 {id: "P040",name:"Batería América Racing NS40ZL",price:280,img:"012.jpeg",stock:6},
+
 {id: "P041",name:"Luz LED Decorativa para Vehículo (Calavera)",price:600,img:"013.jpeg",stock:4},
 {id: "P042",name:"Luz LED Decorativa para Vehículo (Calavera)",price:450,img:"014.jpeg",stock:7},
 {id: "P043",name:"Porta Placa Deportivo XT Racing",price:300,img:"015.jpeg",stock:4},
@@ -357,6 +360,48 @@ const productosBase=[
 {name:`Direccionales para motocicleta `,price:250,img:"195.jpeg",stock:4},
 {name:`Aceite de motor 4 tiempos 10W-40 `,price:380,img:"196.jpeg",stock:4},
 
+{name:`Protector de cambio.Color:Negro`,price:50,img:"209.jpeg",stock:4},
+{name:`Protector de cambio.Color:Rojo`,price:50,img:"210.jpeg",stock:4},
+{name:`Protector de cambio.Color:Azul`,price:50,img:"211.jpeg",stock:4},
+{name:`Pescantes universales`,price:50,img:"212.jpeg",desc:``,stock:4},
+{name:`LLaveros Cortos`,price:50,img:"213.jpeg",stock:4},
+{name:`LLaveros Cortos`,price:50,img:"214.jpeg",stock:4},
+{name:`LLaveros Cortos`,price:50,img:"215.jpeg",stock:4},
+{name:`Conector flexible para escape automotriz`,price:550,img:"310.jpeg",stock:4},
+{name:`Conector flexible para escape automotriz`,price:400,img:"311.jpeg",stock:4},
+{name:`Aromatizante para vehículo marca Michelin`,price:200,img:"312.jpeg",stock:4},
+{name:`LLavero casual con estilo espontáneo `,price:90,img:"313.jpeg",stock:4},
+{name:`Llavero metálico con diseño elegante `,price:90,img:"314.jpeg",stock:4},
+{name:`Terminales de batería para vehículo`,price:200,img:"316.jpeg",stock:4},
+{name:`Terminales de batería para vehículo tipo abrazadera`,price:200,img:"315.jpeg",stock:4},
+{name:`Filtro de aire Picanto 2017`,price:150,img:"325.jpeg",stock:4},
+{name:`Filtro de aire Morning 2004-17`,price:160,img:"326.jpeg",stock:4},
+{name:`Filtro de aire Eòn`,price:150,img:"327.jpeg",stock:4},
+{name:`Filtro de aire zuzuki alto 98-09`,price:150,img:"328.jpeg",stock:4},
+{name:`Filtro de aire Kia picanto 2011-17`,price:200,img:"329.jpeg",stock:4},
+{name:`Castrol Aceite de motor 4T 20W-50`,price:320,img:"331.jpeg",stock:4},
+{name:`Liqui moly Aceite de motor 4T 20W-50 `,price:430,img:"332.jpeg",stock:4},
+{name:`Tacos de freno Yaris 2006-13`,price:1000,img:"333.jpeg",stock:4},
+{name:`Tacos de freno Vigo 2x4 2005-15 `,price:500,img:"334.jpeg",stock:4},
+{name:`Tacos de freno Hyun excell, accent elantra,getz eon md497`,price:600,img:"335.jpeg",stock:4},
+{name:`Pastillas de freno Kia picanto 212-18`,price:600,img:"336.jpeg",stock:4},
+{name:`Zapatas de freno Monrax`,price:530,img:"337.jpeg",stock:4},
+{name:`Kit de limpieza automotriz Ebullient`,price:650,img:"338.jpeg",stock:4},
+{name:`Refrigerante automotriz AUTO`,price:100,img:"339.jpeg",stock:4},
+{name:`Elástico de amarre redondo AUMO Parts de 12 mm`,price:80,img:"216.jpeg",stock:4},
+{name:`Elástico de amarre redondo AUMO Parts de 12 mm`,price:80,img:"218.jpeg",stock:4},
+{name:`Limpiaparabrisas  marco metal `,price:160,img:"318.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico `,price:150,img:"319.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico `,price:170,img:"320.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico`,price:180,img:"321.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico `,price:190,img:"322.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico`,price:190,img:"323.jpeg",stock:4},
+{name:`Limpiaparabrisas marco metálico `,price:200,img:"324.jpeg",stock:4},
+{name:`Elástico de amarre redondo AUMO Parts de 12 mm`,price:80,img:"218.jpeg",stock:4},
+{name:`Forro de asiento para moto `,price:350,img:"219.jpeg",stock:4},
+{name:`Kit de reparación para llantas tipo mecha,`,price:180,img:"220.jpeg",stock:4},
+
+
 ]
 let productos = JSON.parse(localStorage.getItem("stockYoluvami")) || productosBase
 let ventaActual=[]
@@ -402,6 +447,91 @@ function actualizarTabla(){let total=0;const tbody=document.getElementById("tabl
 
 /* ELIMINAR PRODUCTO */
 function eliminar(i){ventaActual.splice(i,1);actualizarTabla()}
+
+function abrirCajaEfectivo(total, callback){
+
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.7);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+    `;
+
+    modal.innerHTML = `
+        <div style="background:#111;color:white;padding:25px;border-radius:15px;width:300px;text-align:center;">
+            
+            <h2>Total: C$${total.toFixed(2)}</h2>
+
+            <input type="number" id="montoRecibido" placeholder="Ingrese monto"
+            style="width:100%;padding:10px;margin:15px 0;border-radius:8px;border:none;font-size:18px;">
+
+            <p id="cambioTexto">Cambio: C$0.00</p>
+
+            <button id="btnConfirmar" style="margin:5px;padding:10px;border:none;border-radius:8px;background:#16a34a;color:white;">
+                Confirmar
+            </button>
+
+            <button id="btnCancelar" style="margin:5px;padding:10px;border:none;border-radius:8px;background:#dc2626;color:white;">
+                Cancelar
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const input = modal.querySelector("#montoRecibido");
+    const cambioTexto = modal.querySelector("#cambioTexto");
+
+    input.focus(); // 🔥 automático
+
+    // 🔥 CAMBIO EN TIEMPO REAL
+    input.addEventListener("input", () => {
+        const recibido = parseFloat(input.value);
+
+        if(isNaN(recibido)){
+            cambioTexto.innerText = "Cambio: C$0.00";
+            return;
+        }
+
+        let cambio = recibido - total;
+
+        if(cambio < 0){
+            cambioTexto.innerText = "Faltan: C$" + Math.abs(cambio).toFixed(2);
+        } else {
+            cambioTexto.innerText = "Cambio: C$" + cambio.toFixed(2);
+        }
+    });
+
+    // ✅ CONFIRMAR
+    modal.querySelector("#btnConfirmar").onclick = () => {
+        const recibido = parseFloat(input.value);
+
+        if(isNaN(recibido) || recibido < total){
+            alerta("Monto insuficiente","#dc2626");
+            return;
+        }
+
+        let cambio = recibido - total;
+
+        callback(recibido, cambio);
+
+        modal.remove();
+    };
+
+    // ❌ CANCELAR
+    modal.querySelector("#btnCancelar").onclick = () => {
+        modal.remove();
+    };
+}
 /* ==================== FINALIZAR VENTA ==================== */
 function finalizarVenta(){
 
@@ -417,21 +547,34 @@ function finalizarVenta(){
 
     let detallePago = "";
 
-    // 💵 EFECTIVO
     if(tipoPago === "efectivo"){
-        let recibido = parseFloat(prompt("Monto recibido: C$"));
 
-        if(isNaN(recibido) || recibido < total){
-            alerta("Monto insuficiente","#dc2626");
-            return;
-        }
+    abrirCajaEfectivo(total, (recibido, cambio) => {
 
-        let cambio = recibido - total;
-        alerta("Cambio: C$" + cambio, "#16a34a");
+        let detallePago = `Efectivo - Recibido: ${recibido} Cambio: ${cambio}`;
 
-        detallePago = `Efectivo - Recibido: ${recibido} Cambio: ${cambio}`;
-    }
+        // 🔥 GUARDAR VENTA AQUÍ (porque es async)
+        historial.push({
+            fecha: fecha.toLocaleDateString(),
+            hora: fecha.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+            vendedor: usuarioActual?.user || "Desconocido",
+            productos: JSON.parse(JSON.stringify(ventaActual)),
+            total,
+            tipoPago,
+            detallePago
+        });
 
+        localStorage.setItem("ventasYoluvami", JSON.stringify(historial));
+
+        alerta("Venta realizada ✅","#16a34a");
+
+        ventaActual = [];
+        actualizarTabla();
+        mostrarHistorial();
+    });
+
+    return; // 🔴 IMPORTANTE: detener flujo normal
+}
     // 🏦 TRANSFERENCIA
     else if(tipoPago === "transferencia"){
         detallePago = "Transferencia";
@@ -683,7 +826,42 @@ Cancelado
 `
 });
 }
+function mostrarHistorialFiltrado(lista){
+    const div = document.getElementById("historial");
+    if(!div) return;
 
+    div.innerHTML = "";
+
+    let ingresos = 0;
+
+    lista.forEach((v,index)=>{
+        ingresos += v.total;
+
+        let productosHTML = "";
+
+        v.productos.forEach(p=>{
+            productosHTML += `
+            <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+                <img src="${p.img}" style="width:35px;border-radius:8px">
+                <div style="font-size:13px">${p.name} x${p.cantidad}</div>
+                <div style="margin-left:auto;font-weight:600">C$${p.subtotal}</div>
+            </div>`;
+        });
+
+        div.innerHTML += `
+        <div style="background:#f9fafc;padding:15px;border-radius:12px;margin-bottom:12px">
+            <div style="font-weight:600;margin-bottom:8px">${v.fecha} - ${v.hora}</div>
+            ${productosHTML}
+            <div style="margin-top:8px;font-weight:700;color:#059669">
+                Total: C$${v.total}
+            </div>
+        </div>`;
+    });
+
+    document.getElementById("resumen").innerHTML = `
+        <p><strong>Total filtrado:</strong> C$${ingresos}</p>
+    `;
+}
 /* ==================== PAGAR DEUDA ==================== */
 function pagarDeuda(index){
 mostrarConfirmacion("¿Marcar como cancelado?",()=>{
