@@ -424,19 +424,20 @@ const url = p.id;
     });
 
 }
-
-// BUSCADOR
 buscador.addEventListener("input", e => {
-    const texto = e.target.value.toLowerCase();
 
-    const filtrados = productos.filter(p =>
-        p.name.toLowerCase().includes(texto) ||
-        p.id.toLowerCase().includes(texto)
-    );
+    const texto = e.target.value.toLowerCase().trim();
+
+    const palabras = texto.split(" ");
+
+    const filtrados = productos.filter(p => {
+        const contenido = `${p.name || ""} ${p.id || ""}`.toLowerCase();
+
+        return palabras.every(palabra => contenido.includes(palabra));
+    });
 
     mostrarProductos(filtrados);
 });
-
 // INICIAL
 mostrarProductos(productos);
 
